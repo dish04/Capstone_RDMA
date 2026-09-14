@@ -104,7 +104,11 @@ def run_single_iteration_local(total_nodes, backend, prompt_seq_len, max_tokens,
             try: os.remove(temp_json)
             except: pass
             return data
-        return None
+        else:
+            if stderr:
+                err_line = stderr.decode(errors='ignore').strip().split("\n")[-1]
+                print(f"[{err_line[:60]}] ", end="", flush=True)
+            return None
     except Exception:
         for p in processes:
             try: p.kill()
@@ -219,8 +223,8 @@ def main():
     parser.add_argument("--backends", type=str, default="tcp,rdma", help="Backends: 'tcp', 'rdma', or 'tcp,rdma'")
     parser.add_argument("--trials", type=int, default=3, help="Measured repetitions per configuration cell")
     parser.add_argument("--warmup", type=int, default=2, help="Warm-up runs discarded per configuration cell")
-    parser.add_argument("--mode", choices=["cluster", "local"], default="cluster",
-                        help="Execution mode: 'cluster' (QEMU virtual instances) or 'local' (host multi-process)")
+    parser.add_argument("--mode", choices=["local", "cluster"], default="local",
+                        help="Execution mode: 'local' (host multi-process benchmark) or 'cluster' (QEMU virtual instances)")
     parser.add_argument("--resume", action="store_true", help="Resume from previous checkpoint if available")
 
     args = parser.parse_args()

@@ -158,7 +158,7 @@ class RDMASharedMemTransport:
         self.rank = rank
         self.total_nodes = total_nodes
         self.shm_path = shm_path
-        self.max_tensor_size = 1024 * HIDDEN_DIM * 4
+        self.max_tensor_size = 4096 * HIDDEN_DIM * 4
         self.total_size = HEADER_SIZE + self.max_tensor_size
         self.buffer = None
         self.fd = None
