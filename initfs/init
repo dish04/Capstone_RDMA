@@ -90,7 +90,13 @@ echo "-------------------------------------------------"
 echo "NODE READY: VM_ID=$VM_ID | IP=$IP_ADDR | RDMA=rxe0"
 echo "-------------------------------------------------"
 
-# 11. Execute autorun script if specified, otherwise interactive shell
+# 11. Launch background pipeline worker daemon if present in 9p share
+if [ -f /mnt/weights/vm_worker.py ]; then
+    echo "Starting VM Worker Service on port 18000..."
+    python3 /mnt/weights/vm_worker.py --vm-id "$VM_ID" --port 18000 >/tmp/vm_worker.log 2>&1 &
+fi
+
+# 12. Execute autorun script if specified, otherwise interactive shell
 if [ -n "$AUTORUN" ] && [ -f "$AUTORUN" ]; then
     echo "Executing autorun script: $AUTORUN"
     exec sh "$AUTORUN"

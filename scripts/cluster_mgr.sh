@@ -105,11 +105,23 @@ start_cluster() {
         "$SCRIPT_DIR/repack_initramfs.sh"
     fi
 
+    # Clean up any lingering VM instances before launching
+    for pid_file in /tmp/qemu_vm*.pid; do
+        if [[ -f "$pid_file" ]]; then
+            local old_pid=$(sudo cat "$pid_file" 2>/dev/null || cat "$pid_file" 2>/dev/null)
+            if [[ -n "$old_pid" ]] && ps -p "$old_pid" >/dev/null 2>&1; then
+                sudo kill -9 "$old_pid" 2>/dev/null || true
+            fi
+            sudo rm -f "$pid_file"
+        fi
+    done
+
     setup_bridge
     setup_host_rdma
 
     # Ensure files are synced to weights folder
     cp -f "$WORKSPACE_ROOT/capstone/rdma/distributed_pipeline.py" "$WEIGHTS_DIR/" 2>/dev/null || true
+    cp -f "$WORKSPACE_ROOT/capstone/rdma/vm_worker.py" "$WEIGHTS_DIR/" 2>/dev/null || true
     cp -f "$WORKSPACE_ROOT/capstone/rdma/rdma_pipeline.c" "$WEIGHTS_DIR/" 2>/dev/null || true
     if [[ -f "$WORKSPACE_ROOT/capstone/rdma/rdma_pipeline" ]]; then
         cp -f "$WORKSPACE_ROOT/capstone/rdma/rdma_pipeline" "$WEIGHTS_DIR/" 2>/dev/null || true
@@ -173,6 +185,15 @@ start_cluster() {
             echo "[!] Did not respond yet (check $LOGS_DIR/vm${i}.log)"
         fi
     done
+
+    echo "Ensuring VM Worker Services are active..."
+    for ((i=1; i<=num_nodes; i++)); do
+        local sock_file="/tmp/vm${i}_console.sock"
+        if [[ -S "$sock_file" ]]; then
+            printf "\npython3 /mnt/weights/vm_worker.py --vm-id %d --port 18000 >/tmp/vm_worker.log 2>&1 &\n" "$i" | nc -U "$sock_file" 2>/dev/null || true
+        fi
+    done
+
     echo "================================================="
     echo "Cluster start command finished."
 }

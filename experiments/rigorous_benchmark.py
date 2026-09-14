@@ -111,18 +111,62 @@ def run_single_iteration_local(total_nodes, backend, prompt_seq_len, max_tokens,
             except: pass
         return None
 
-def run_single_iteration_cluster(total_nodes, backend, prompt_seq_len, max_tokens):
-    """Runs Rank 0 on the host driving the running QEMU cluster."""
+def run_single_iteration_cluster(total_nodes, backend, prompt_seq_len, max_tokens, port_base=19000):
+    """Starts worker stages on VMs 1..N-1, then runs Rank 0 on the host driving the cluster."""
+    import urllib.request
+    import socket
+
     node_ips = ["192.168.100.1"] + [f"192.168.100.{i+1}" for i in range(1, total_nodes)]
     node_ips_str = ",".join(node_ips)
     temp_json = os.path.join(RESULTS_DIR, f"cluster_{backend}_n{total_nodes}_{time.time_ns()}.json")
 
+    # 1. Start worker ranks on each VM via HTTP or serial socket
+    for rank in range(1, total_nodes):
+        vm_id = rank
+        vm_ip = node_ips[rank]
+        url = f"http://{vm_ip}:18000/start"
+        payload = json.dumps({
+            "rank": rank,
+            "total_nodes": total_nodes,
+            "node_ips": node_ips_str,
+            "backend": backend,
+            "port_base": port_base,
+            "benchmark": True,
+            "seq_len": prompt_seq_len,
+            "max_tokens": max_tokens
+        }).encode()
+
+        started = False
+        for attempt in range(3):
+            try:
+                req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+                with urllib.request.urlopen(req, timeout=3) as resp:
+                    if resp.status == 200:
+                        started = True
+                        break
+            except Exception:
+                # If worker daemon not yet listening, wake it via unix console socket
+                sock_file = f"/tmp/vm{vm_id}_console.sock"
+                if os.path.exists(sock_file):
+                    try:
+                        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+                            s.connect(sock_file)
+                            s.sendall(f"\npython3 /mnt/weights/vm_worker.py --vm-id {vm_id} --port 18000 >/tmp/vm_worker.log 2>&1 &\n".encode())
+                        time.sleep(1.2)
+                    except Exception:
+                        pass
+                time.sleep(0.5)
+
+    time.sleep(1.0)
+
+    # 2. Run Rank 0 Master on Host
     cmd = [
         sys.executable, "-u", PIPELINE_SCRIPT,
         "--rank", "0",
         "--total-nodes", str(total_nodes),
         "--node-ips", node_ips_str,
         "--backend", backend,
+        "--port-base", str(port_base),
         "--benchmark",
         "--seq-len", str(prompt_seq_len),
         "--max-tokens", str(max_tokens),
@@ -138,7 +182,11 @@ def run_single_iteration_cluster(total_nodes, backend, prompt_seq_len, max_token
             try: os.remove(temp_json)
             except: pass
             return data
-        return None
+        else:
+            if stderr:
+                err_line = stderr.decode(errors='ignore').strip().split("\n")[-1]
+                print(f"[{err_line[:60]}] ", end="", flush=True)
+            return None
     except Exception:
         return None
 
@@ -147,10 +195,9 @@ def ensure_cluster_state(target_nodes, current_nodes):
     if current_nodes == target_nodes:
         return current_nodes
 
-    if current_nodes is not None:
-        print(f"\n[Cluster Orchestrator] Stopping current cluster ({current_nodes} nodes)...")
-        subprocess.run(["sudo", CLUSTER_MGR, "stop"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        time.sleep(2)
+    print(f"\n[Cluster Orchestrator] Stopping any running cluster...")
+    subprocess.run(["sudo", CLUSTER_MGR, "stop"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(2)
 
     print(f"\n[Cluster Orchestrator] Starting cluster with {target_nodes} nodes...")
     res = subprocess.run(["sudo", CLUSTER_MGR, "start", str(target_nodes)])
@@ -263,7 +310,7 @@ def main():
                         port_counter += (num_nodes + 5)
                         print(f"  [Warmup {w+1}/{args.warmup}] ... ", end="", flush=True)
                         if args.mode == "cluster":
-                            w_res = run_single_iteration_cluster(num_nodes, backend, prompt_size, max_tokens)
+                            w_res = run_single_iteration_cluster(num_nodes, backend, prompt_size, max_tokens, port_counter)
                         else:
                             w_res = run_single_iteration_local(num_nodes, backend, prompt_size, max_tokens, port_counter)
                         if w_res:
@@ -286,7 +333,7 @@ def main():
                         port_counter += (num_nodes + 5)
                         print(f"  [Trial {t+1}/{num_trials}] Running ... ", end="", flush=True)
                         if args.mode == "cluster":
-                            res = run_single_iteration_cluster(num_nodes, backend, prompt_size, max_tokens)
+                            res = run_single_iteration_cluster(num_nodes, backend, prompt_size, max_tokens, port_counter)
                         else:
                             res = run_single_iteration_local(num_nodes, backend, prompt_size, max_tokens, port_counter)
 
