@@ -1,0 +1,85 @@
+#!/bin/busybox sh
+
+# 1. Mount essential filesystems
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+/bin/mount -t configfs none /sys/kernel/config
+
+echo "Configuring Network and Soft-RoCE..."
+
+# 2. Bring up the network wire
+/bin/ip link set lo up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+/bin/ip link set eth0 up
+/bin/ip link set eth0 mtu 1500
+
+# 3. Give the kernel 2 seconds to wake the hardware up
+/bin/sleep 2 
+
+# 4. Bind the RDMA driver to the ethernet card
+/bin/rdma link add rxe0 type rxe netdev eth0
+
+# MAGIC FIX: Give the kernel 2 seconds to actually create the hidden sysfs folders!
+/bin/sleep 2 
+
+# 5. Dynamically extract the exact Hardware IDs for the node
+mkdir -p /dev/infiniband
+DEV_NUM=$(cat /sys/class/infiniband_verbs/uverbs0/dev)
+MAJOR=$(echo $DEV_NUM | cut -d: -f1)
+MINOR=$(echo $DEV_NUM | cut -d: -f2)
+
+# 6. Build the physical bridge to the kernel
+mknod /dev/infiniband/uverbs0 c $MAJOR $MINOR
+chmod -R 777 /dev/infiniband
+
+# 7. Give the libibverbs library the glasses it needs to see the hardware
+mkdir -p /etc/libibverbs.d
+echo "driver rxe" > /etc/libibverbs.d/rxe.driver
+
+echo "------------------------------------------------"
+echo "RDMA NODE READY: 192.168.100.2"
+echo "------------------------------------------------"
+
+mkdir -p /mnt/weights
+mount -t 9p -o trans=virtio,version=9p2000.L host_weights /mnt/weights
+
+# 1. Add our folder to the search path
+export PATH=/mnt/weights/python_env/bin:$PATH
+
+# 2. CRITICAL: Tell the VM where the .so files are
+export LD_LIBRARY_PATH=/mnt/weights/python_env/lib:$LD_LIBRARY_PATH
+
+# 3. Tell Python where the packages (Torch/Transformers) are
+export PYTHONPATH=/mnt/weights/python_env/lib/python3.12/site-packages
+# 8. Hand over control to the user ONLY after everything is built
+# 1. Mount the RAM-disk for the mailbox
+mkdir -p /dev/shm && mount -t tmpfs tmpfs /dev/shm 2>/dev/null
+
+# 2. Set the environment variables
+export USER=root LOGNAME=root
+export PATH=/mnt/weights/python_env/bin:$PATH
+export LD_LIBRARY_PATH=/mnt/weights/python_env/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=/mnt/weights/python_env/lib/python3.12/site-packages
+export PYTHONHOME=/mnt/weights/python_env
+
+# 3. PyTorch Cache fixes
+export TORCHINDUCTOR_CACHE_DIR=/tmp/torch_cache
+export TRITON_CACHE_DIR=/tmp/triton_cache
+# 1. Mount the shared folder
+mkdir -p /mnt/weights
+mount -t 9p -o trans=virtio hostshare /mnt/weights -oversion=9p2000.L
+
+# 2. Mount the RAM disk
+mkdir -p /dev/shm
+mount -t tmpfs tmpfs /dev/shm
+
+# 3. Restore Python Identity
+export USER=root LOGNAME=root
+export PATH=/mnt/weights/python_env/bin:$PATH
+export LD_LIBRARY_PATH=/mnt/weights/python_env/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=/mnt/weights/python_env/lib/python3.12/site-packages
+export PYTHONHOME=/mnt/weights/python_env
+export TORCHINDUCTOR_CACHE_DIR=/tmp/torch_cache
+export TRITON_CACHE_DIR=/tmp/triton_cache
+exec /bin/sh

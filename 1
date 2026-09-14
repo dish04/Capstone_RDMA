@@ -1,0 +1,2000 @@
+mv nvim-linux-x86_64 ~/nvim
+cd nvim/
+ls
+cd bin
+ls
+pwd
+sudo ln -s /home/nitk/nvim/bin/nvim usr/bin/nvim
+cd
+cd bin
+cd usr/bin
+ls
+pwd
+ls -a /usr/bin
+cd /usr/bin
+mkdir nvim
+rm nvim
+nvim
+rm nvim
+sudo rm nivm
+sudo rm nvim
+sudo ln -s /home/nitk/nvim/bin/nvim usr/bin/nvim
+mkdir nvim
+sudo mkdir nvim
+sudo ln -s /home/nitk/nvim/bin/nvim usr/bin/nvim
+sudo ln -s /home/nitk/nvim/bin/nvim /usr/bin/nvim
+nvim
+sudo snap install nvim
+sudo snap install --classic nvim
+nvim
+sudo snap remove nvim
+cd 
+cd Downloads
+chmod +x nvim.appimage
+chmod +x nvim-linux-x86_64.appimage 
+sudo mv nvim.appimage /usr/local/bin/nvim
+sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
+nvim
+hostnamectl
+sudo apt install -y build-essential
+sudo apt install -y build-essential libncurses-dev bison flex libssl-dev libelf-dev \ cpu-checker qemu-kvm libvirt-daemon-ystem libvert-clients bridge-utils \ rdma-core libiberbs-dev \ ibverbs-providers
+sudo apt install -y build-essential libncurses-dev bison flex libssl-dev libelf-dev \ cpu-checker qemu-kvm libvirt-daemon-system libvert-clients bridge-utils \ rdma-core libiberbs-dev \ ibverbs-providers
+sudo apt install -y build-essential libncurses-dev bison flex libssl-dev libelf-dev \ cpu-checker qemu-kvm libvirt-daemon-system libvert-clients bridge-utils \ rdma-core libibverbs-dev \ ibverbs-providers
+sudo apt update
+sudo apt install -y build-essential libncurses-dev bison flex libssl-dev libelf-dev \ cpu-checker qemu-kvm libvirt-daemon-system libvert-clients bridge-utils \ rdma-core libibverbs-dev \ ibverbs-providers
+sudo apt install -y build-essentials libncurses-dev bison flex libssl-dev
+sudo apt install -y build-essential libncurses-dev bison flex libssl-dev
+sudo apt install -y qemu-system-x86 cpu-checker libvert-daemon-system libvirt-clients bridge-utils
+sudo apt install -y qemu-system-x86 cpu-checker libvirt-clients bridge-utils
+sudo apt install -y rdma-core libibverbs-dev ibverbs-providers
+sudo apt install -y qemu-system-x86 cpu-checker libvirt-daemon-system libvirt-clients bridge-utils
+mkdir capstone/rdma-arbitrator
+mkdir capstone
+cd capstone/
+mkdir rdma
+cd rdma
+touch rdma_arbitrator.c Makefile
+nvim 
+nvim rdma_arbitrator.c 
+[200~sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -object memory-backend-ram,id=mem0,size=2G -enable-kvm
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -object memory-backend-ram,id=mem0,size=2G -enable-kvm
+sudo mkdir -p /etc/qemu
+echo "allow br0" | sudo tee /etc/qemu/bridge.conf
+# Set proper permissions for the helper
+sudo chown root:root /usr/lib/qemu/qemu-bridge-helper
+sudo chmod 4755 /usr/lib/qemu/qemu-bridge-helper
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -object memory-backend-ram,id=mem0,size=2G -enable-kvm
+find ~/ -name bzImage
+# Navigate to your kernel source directory
+cd ~/linux
+# 1. Use the default configuration as a base
+make defconfig
+# 2. Compile the kernel (this will take 15-45 minutes depending on your laptop)
+# -j$(nproc) uses all your CPU cores to speed it up
+make -j$(nproc)
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -object memory-backend-ram,id=mem0,size=2G   -enable-kvm
+cd ~
+# Download the 6.11 kernel source (this is a large download)
+wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.11.tar.xz
+# Extract the files
+tar -xf linux-6.11.tar.xz
+# Rename it to just 'linux' so your QEMU command works
+mv linux-6.11 linux
+cd linux
+# 1. Create the initial configuration
+make defconfig
+# 2. Compile the kernel (This will take a while)
+# -j$(nproc) uses all your CPU cores to speed it up
+make -j$(nproc)
+sudo apt update
+sudo apt install -y libelf-dev libssl-dev bc dwarves
+sudo apt update
+# Ensure headers for the target version are present
+sudo apt install -y linux-headers-6.14.0-37-generic libelf-dev libssl-dev
+# Create the directory if it's missing
+sudo mkdir -p /usr/src/linux-headers-6.14.0-37-generic/scripts/
+# Link the module linker script from your current build to the new path
+sudo ln -s ~/linux/scripts/module.lds /usr/src/linux-headers-6.14.0-37-generic/scripts/module.lds
+# Ensure the DKMS tool is ready
+sudo apt install -y dkms
+# Force rebuild the NVIDIA modules for the 6.14 kernel
+# Replace '580' with your specific version if it differs
+sudo dkms autoinstall -k 6.14.0-37-generic
+# This will attempt to configure all packages that were previously failing
+sudo dpkg --configure -a
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -append "console=ttyS0 root=/dev/sda ip=192.168.100.2::192.168.100.1:255.255.255.0"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm [cite: 121, 138]
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -append "console=ttyS0 root=/dev/sda ip=192.168.100.2::192.168.100.1:255.255.255.0"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm cite: 121, 138
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -append "console=ttyS0 root=/dev/sda ip=192.168.100.2::192.168.100.1:255.255.255.0"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm 
+ls -l ~/linux/arch/x86/boot/bzImage
+cd ~/linux
+# 1. Clean any partial/failed builds
+make clean 
+# 2. Use the default config as a base
+make defconfig 
+# 3. Build the kernel using all available CPU cores
+make -j$(nproc)
+ls -lh ~/linux/arch/x86/boot/bzImage
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -append "console=ttyS0 root=/dev/sda ip=192.168.100.2::192.168.100.1:255.255.255.0"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm [cite: 121, 138]
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -append "console=ttyS0 root=/dev/sda ip=192.168.100.2::192.168.100.1:255.255.255.0"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+sudo apt install busybox-static
+mkdir -p initfs/{bin,sbin,etc,proc,sys,newroot}
+cp /bin/busybox-static initfs/bin/busybox
+which busybox
+# OR
+dpkg -L busybox-static | grep bin
+# 1. Clear the old directory to avoid permission issues
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+# 2. Copy the binary using the path you just confirmed
+cp /usr/bin/busybox ~/initfs/bin/busybox
+# 3. Create the symlinks for common commands (so 'ls', 'mkdir', etc. work)
+cd ~/initfs/bin
+for cmd in sh ls mkdir mount echo ip cat; do ./busybox --install -s .; done
+cd ~
+cd ~/initfs/init/
+cd ~/initfs/
+ls
+nvim init
+chmod +x ~/initfs/init
+ls
+cd
+# Pack the image
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img
+cd ..
+# Boot the VM
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+cp /usr/bin/busybox ~/initfs/bin/busybox
+cd ~/initfs/bin
+./busybox --install -s .
+cd ~
+cd ~/initfs/
+ls
+nvim init.sh
+chmod +x ~/initfs/init
+cd
+chmod +x ~/initfs/init
+chmod +x ~/initfs/init.sh
+# Pack
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img
+cd ~
+# Run
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+ls
+cd capstone
+ls
+cd rdm
+cd rdma/
+ls
+nvim rdma_arbitrator.c 
+make
+ls
+sudo insmod rdma_arbitrator.ko
+dmesg | tail
+sudo dmesg | tail
+sudo rmmod rdma_arbitrator
+sudo dmesg | tail
+sudo rmmod rdma_arbitrator
+sudo modprobe rdma_rxe [cite: 91]
+ip link
+sudo rdma link add rxe0 type rxe dev enp128s31f6
+sudo rdma link add rxe0 type rxe
+sudo rdma link add rxe0 type rxe netdev enp128s31f6
+rdma link
+sudo ip link add br0 type bridge
+sudo ip link set br0 up
+# Create the bridge 
+sudo ip link add br0 type bridge
+sudo ip link set br0 up
+# Assign an IP to your host on this bridge [cite: 51]
+sudo ip addr add 192.168.100.1/24 dev br0
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm.
+clear
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "root=/dev/sda1 console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm 
+#!/bin/busybox sh
+# 1. Mount essential kernel filesystems
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+# 2. Setup networking for the Control Plane
+# This allows the host (192.168.100.1) to find this node
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+# 3. Welcome Message
+echo "------------------------------------------------"
+echo "WELCOME TO THE NITK RDMA VIRTUAL NODE"
+echo "Node IP: 192.168.100.2 | Role: Remote Memory Provider"
+echo "------------------------------------------------"
+# 4. Prevent Kernel Panic
+# exec /bin/sh keeps PID 1 alive so the kernel doesn't crash
+exec /bin/sh
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+# Repack
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+# Run
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+# Repack correctly
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+# Launch QEMU
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+ls -l ~/initfs/bin/
+# Repack correctly
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+# Launch QEMU
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+# Pack from INSIDE the folder
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+# Launch QEMU
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd ~/initfs
+# Pack everything inside the current folder into the image
+find . | cpio -H newc -o | gzip > ../initrd.img
+cd ..
+cd ~/initfs
+ls
+rm init.sh 
+nvim init
+cat init
+chmod +x init
+ls
+find . | cpio -H newc -o | gzip > ../initrd.img
+cd bin
+ls
+cd
+# 1. Clear the old structure
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+# 2. Copy the verified binary
+cp /usr/bin/busybox ~/initfs/bin/busybox
+# 3. CRITICAL: Create the symlinks
+# This makes 'sh', 'mount', 'ip', etc. work inside the VM
+cd ~/initfs/bin
+./busybox --install -s .
+cd ~
+# 4. Re-verify the init script
+# Ensure it has exactly these paths:
+cat <<EOF > ~/initfs/init
+#!/bin/busybox sh
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+
+echo "------------------------------------------------"
+echo "WELCOME TO THE NITK RDMA VIRTUAL NODE"
+echo "------------------------------------------------"
+exec /bin/sh
+EOF
+
+chmod +x ~/initfs/init
+ls -l ~/initfs
+# 1. Reset the directory
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+# 2. Copy and install BusyBox symlinks
+cp /usr/bin/busybox ~/initfs/bin/busybox
+cd ~/initfs/bin
+# This creates 'sh', 'mount', 'ip', etc. so they are "found"
+./busybox --install -s .
+cd ~
+# 3. Create the robust init script
+cat <<'EOF' > ~/initfs/init
+#!/bin/busybox sh
+
+# Mount filesystems required for RDMA drivers
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+
+# Setup Control Plane (TCP Discovery)
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+
+echo "------------------------------------------------"
+echo "WELCOME TO THE NITK RDMA VIRTUAL NODE"
+echo "------------------------------------------------"
+
+# Keep the process alive
+exec /bin/sh
+EOF
+
+# 4. Finalize permissions
+chmod +x ~/initfs/init
+# 1. Start fresh
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+# 2. Copy the binary
+cp /usr/bin/busybox ~/initfs/bin/busybox
+# 3. CRITICAL: Install applet symlinks locally
+# This creates the physical /bin/sh, /bin/mount, etc.
+cd ~/initfs/bin
+./busybox --install -s .
+cd ~
+# 4. Finalize the init script with the correct shell path
+cat <<'EOF' > ~/initfs/init
+#!/bin/busybox sh
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+
+echo "------------------------------------------------"
+echo "WELCOME TO THE NITK RDMA VIRTUAL NODE"
+echo "------------------------------------------------"
+exec /bin/sh
+EOF
+
+chmod +x ~/initfs/init
+# Force install the static version
+sudo apt update && sudo apt install busybox-static -y
+# Re-copy it and install applets
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+cp /usr/bin/busybox-static ~/initfs/bin/busybox
+cd ~/initfs/bin
+./busybox --install -s .
+cd ~
+# Find the actual path
+BUSYBOX_PATH=$(which busybox)
+echo "Using BusyBox from: $BUSYBOX_PATH"
+# Recreate the structure
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+# Copy it to your bin folder
+cp $BUSYBOX_PATH ~/initfs/bin/busybox
+cd ~/initfs/bin
+chmod +x busybox
+./busybox --install -s .
+cd ~
+cat <<'EOF' > ~/initfs/init
+#!/bin/busybox sh
+# Mount essential filesystems for RDMA
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+
+# Network setup for the Control Plane (Discovery)
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+
+echo "------------------------------------------------"
+echo "NITK RDMA NODE: 192.168.100.2 READY"
+echo "------------------------------------------------"
+exec /bin/sh
+EOF
+
+chmod +x ~/initfs/init
+# Clean start
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev}
+# Copy the static binary
+cp $(which busybox) ~/initfs/bin/busybox
+chmod +x ~/initfs/bin/busybox
+# Create the symlinks - DO NOT skip this
+# This creates the physical files /bin/sh, /bin/mount, etc.
+for cmd in sh mount ip lo; do     ln -s /bin/busybox ~/initfs/bin/$cmd; done
+# Create the init script manually to ensure no hidden characters
+cat << 'EOF' > ~/initfs/init
+#!/bin/busybox sh
+
+# Mounts
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+
+# Network
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+
+echo "------------------------------------------------"
+echo "NITK RDMA NODE: 192.168.100.2 READY"
+echo "------------------------------------------------"
+
+# Drop to shell
+exec /bin/sh
+EOF
+
+chmod +x ~/initfs/init
+cd ~/linux
+make kernelrelease
+# 1. Create the module directory (Replace VERSION with your output from step 1)
+VERSION=$(cd ~/linux && make -s kernelrelease)
+mkdir -p ~/initfs/lib/modules/$VERSION/kernel/drivers/infiniband/sw/rxe
+mkdir -p ~/initfs/lib/modules/$VERSION/kernel/drivers/infiniband/core
+# 2. Find and copy the Soft-RoCE and Core modules
+cp ~/linux/drivers/infiniband/sw/rxe/rdma_rxe.ko ~/initfs/lib/modules/$VERSION/kernel/drivers/infiniband/sw/rxe/
+cp ~/linux/drivers/infiniband/core/ib_core.ko ~/initfs/lib/modules/$VERSION/kernel/drivers/infiniband/core/
+cp ~/linux/drivers/infiniband/core/ib_uverbs.ko ~/initfs/lib/modules/$VERSION/kernel/drivers/infiniband/core/
+# 3. Copy the dependencies (usually configfs and net/sunrpc if needed)
+mkdir -p ~/initfs/lib/modules/$VERSION/kernel/fs/configfs
+cp ~/linux/fs/configfs/configfs.ko ~/initfs/lib/modules/$VERSION/kernel/fs/configfs/
+grep -E "CONFIG_RDMA_RXE|CONFIG_INFINIBAND|CONFIG_CONFIGFS_FS" ~/linux/.config
+cd ~/linux
+make menuconfig
+# Rebuild the kernel with the new RDMA features
+make -j$(nproc)
+# 1. Locate the tool on your host
+RDMA_BIN=$(which rdma)
+echo "Copying rdma tool from: $RDMA_BIN"
+# 2. Copy it to your initfs
+cp $RDMA_BIN ~/initfs/bin/rdma
+chmod +x ~/initfs/bin/rdma
+# 3. Check for library dependencies
+# If this returns 'not a dynamic executable', you're good.
+# If it lists .so files, we may need to copy those too.
+ldd ~/initfs/bin/rdma
+#!/bin/busybox sh
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+/bin/mount -t configfs none /sys/kernel/config
+# Setup Networking
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+# Create the RDMA Link
+# We wait 1 second to ensure eth0 is fully up
+/bin/busybox sleep 1
+/bin/rdma link add rxe0 type rxe netdev eth0
+echo "------------------------------------------------"
+echo "NITK RDMA NODE: 192.168.100.2 READY"
+echo "RDMA Device 'rxe0' initialized on eth0"
+echo "------------------------------------------------"
+exec /bin/sh
+# 1. Pack
+cd ~/initfs
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../initrd.img
+cd ..
+# 2. Boot
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+# Pack from INSIDE the folder to ensure /init is at the root
+cd ~/initfs
+find . | cpio -H newc -o | gzip > ../initrd.img
+cd ..
+# Boot the recompiled RDMA kernel
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+# Repack
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+# Boot
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+# Repack
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+# Boot
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd
+sudo qemu-system-x86_64 -m 2G -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0 -device virtio-net-pci,netdev=net0   -nographic -enable-kvm
+cd ~/initfs/
+nvim init 
+# 1. Start fresh
+rm -rf ~/initfs && mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev,lib/x86_64-linux-gnu,lib64}
+# 2. Copy the verified BusyBox
+cp $(which busybox) ~/initfs/bin/busybox
+chmod +x ~/initfs/bin/busybox
+# 3. MANUALLY link the applets (sh, mount, ip)
+# This prevents the 'applet not found' error
+for applet in sh mount ip sleep; do     ln -sf busybox ~/initfs/bin/$applet; done
+# 4. Copy the rdma tool and its libraries
+# Since 'rdma' usually isn't in busybox, we copy your host's version
+cp $(which rdma) ~/initfs/bin/rdma
+# Copy required libraries so rdma doesn't fail
+cp /lib/x86_64-linux-gnu/libmnl.so.0 ~/initfs/lib/x86_64-linux-gnu/
+cp /lib/x86_64-linux-gnu/libelf.so.1 ~/initfs/lib/x86_64-linux-gnu/
+cp /lib64/ld-linux-x86-64.so.2 ~/initfs/lib64/
+cd
+# 1. Recreate the folder structure
+mkdir -p ~/initfs/{bin,sbin,etc,proc,sys,dev,lib/x86_64-linux-gnu,lib64}
+# 2. Copy BusyBox and MANUALLY link the shell
+cp $(which busybox) ~/initfs/bin/busybox
+chmod +x ~/initfs/bin/busybox
+ln -sf busybox ~/initfs/bin/sh
+ln -sf busybox ~/initfs/bin/mount
+ln -sf busybox ~/initfs/bin/ip
+ln -sf busybox ~/initfs/bin/sleep
+# 3. Copy the 'rdma' tool and its dependencies
+cp $(which rdma) ~/initfs/bin/rdma
+cp /lib/x86_64-linux-gnu/libmnl.so.0 ~/initfs/lib/x86_64-linux-gnu/
+cp /lib/x86_64-linux-gnu/libelf.so.1 ~/initfs/lib/x86_64-linux-gnu/
+cp /lib64/ld-linux-x86-64.so.2 ~/initfs/lib64/
+# 4. Create the final init script
+cat << 'EOF' > ~/initfs/init
+#!/bin/busybox sh
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs none /sys
+/bin/mount -t devtmpfs devtmpfs /dev
+/bin/mount -t configfs none /sys/kernel/config
+
+/bin/ip link set lo up
+/bin/ip link set eth0 up
+/bin/ip addr add 192.168.100.2/24 dev eth0
+
+/bin/sleep 1
+/bin/rdma link add rxe0 type rxe netdev eth0
+
+echo "------------------------------------------------"
+echo "NITK RDMA NODE READY: 192.168.100.2"
+echo "------------------------------------------------"
+exec /bin/sh
+EOF
+
+chmod +x ~/initfs/init
+# 1. Find where libcap lives on your host
+LIBCAP_PATH=$(ldd $(which rdma) | grep libcap | awk '{print $3}')
+echo "Copying libcap from: $LIBCAP_PATH"
+# 2. Copy it to the VM's library directory
+cp $LIBCAP_PATH ~/initfs/lib/x86_64-linux-gnu/
+# Copy these common dependencies for the rdma tool
+cp /lib/x86_64-linux-gnu/libdl.so.2 ~/initfs/lib/x86_64-linux-gnu/ 2>/dev/null
+cp /lib/x86_64-linux-gnu/libc.so.6 ~/initfs/lib/x86_64-linux-gnu/ 2>/dev/null
+ls /sys/class/infiniband
+# Start the ping-pong server on the host
+ibv_rc_pingpong -d rxe0 -g 0
+sudo apt install ibverbs-utils
+ibv_rc_pingpong -d rxe0 -g 0
+[200~# 1. Locate the tool
+PING_BIN=$(which ibv_rc_pingpong)
+echo "Copying from: $PING_BIN"
+# 2. Copy to VM bin
+cp $PING_BIN ~/initfs/bin/~
+# Get the list of libraries and copy them
+for lib in $(ldd $PING_BIN | grep "=> /" | awk '{print $3}'); do     cp $lib ~/initfs/lib/x86_64-linux-gnu/; done
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img && cd ..
+# 1. Copy the main binary
+cp $(which ibv_rc_pingpong) ~/initfs/bin/
+# 2. Automated library grabber
+# This identifies every .so file the tool needs and copies it to your initfs
+for lib in $(ldd $(which ibv_rc_pingpong) | grep "=> /" | awk '{print $3}'); do     cp "$lib" ~/initfs/lib/x86_64-linux-gnu/; done
+cd ~/initfs
+find . | cpio -H newc -o | gzip > ../initrd.img
+cd ..
+ibv_rc_pingpong -d rxe0 -g 0
+# 1. Create the configuration directory in your initfs
+mkdir -p ~/initfs/etc/libibverbs.d/
+# 2. Tell libibverbs to use the RXE (Soft-RoCE) driver
+echo "rxe" > ~/initfs/etc/libibverbs.d/rxe.driver
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img
+cd
+cd ~/initfs && find . | cpio -H newc -o | gzip > ../initrd.img
+ls
+cd ..
+ls
+ibv_rc_pingpong -d rxe0 -g 0
+# Create the config directory in your initfs
+mkdir -p ~/initfs/etc/libibverbs.d/
+# Create the driver file
+echo "rxe" > ~/initfs/etc/libibverbs.d/rxe.driver
+find /usr/lib -name "librxe-rdmav25.so"
+sudo apt update && sudo apt install rdma-core libibverbs-dev -y
+find /usr/lib -name "lib*rxe*"
+# 1. Create the plugin directory in initfs
+mkdir -p ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+# 2. Copy the library (Replace PATH_TO_LIB with your find result)
+# Example: cp /usr/lib/x86_64-linux-gnu/libibverbs/librxe-rdmav34.so ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+cp /usr/lib/x86_64-linux-gnu/libibverbs/librxe-rdmav34.so ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+ibv_rc_pingpong -d rxe0 -g 0
+# 1. Create the mirrored path
+mkdir -p ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+# 2. Copy the library you found
+# Replace [FOUND_PATH] with the result from the find command above
+cp /usr/lib/x86_64-linux-gnu/libibverbs/librxe-rdmav34.so ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+# 3. Ensure the driver config is also there
+mkdir -p ~/initfs/etc/libibverbs.d/
+echo "rxe" > ~/initfs/etc/libibverbs.d/rxe.driver
+chmod -R 777 /dev/infiniband
+# Find the exact provider library
+find /usr/lib/x86_64-linux-gnu/libibverbs/ -name "lib*rxe*"
+mkdir -p ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+cp /usr/lib/x86_64-linux-gnu/libibverbs/librxe-rdmav34.so ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+ibv_rc_pingpong -d rxe0 -g 0
+# 1. Copy the diagnostic binaries
+cp $(which ibv_devices) ~/initfs/bin/
+cp $(which ibv_devinfo) ~/initfs/bin/
+# 2. Re-verify the libraries (just in case)
+for lib in $(ldd $(which ibv_devices) | grep "=> /" | awk '{print $3}'); do     cp -n "$lib" ~/initfs/lib/x86_64-linux-gnu/; done
+# Find where the RXE provider library lives on your host
+RXE_LIB=$(find /usr/lib/x86_64-linux-gnu/libibverbs/ -name "lib*rxe*")
+# Create the EXACT same path in your initfs
+mkdir -p ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+cp "$RXE_LIB" ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+ibv_rc_pingpong -d rxe0 -g 0
+# 1. Create a fallback plugin directory
+mkdir -p ~/initfs/usr/local/lib/libibverbs/
+# 2. Find your RXE library again and copy it to BOTH places
+RXE_LIB=$(find /usr/lib/x86_64-linux-gnu/libibverbs/ -name "lib*rxe*")
+cp "$RXE_LIB" ~/initfs/usr/lib/x86_64-linux-gnu/libibverbs/
+cp "$RXE_LIB" ~/initfs/usr/local/lib/libibverbs/
+# 3. Double-check the driver config is in the root etc
+mkdir -p ~/initfs/etc/libibverbs.d/
+echo "rxe" > ~/initfs/etc/libibverbs.d/rxe.driver
+find /usr/lib/x86_64-linux-gnu/libibverbs/ -name "lib*rxe*"
+grep "CONFIG_INFINIBAND_USER_VERBS" ~/linux/.config
+[200~cd ~/linux
+make menuconfig~
+make menuconfig
+cd ~/linux
+make menuconfig
+# Recompile only the changed sections
+make -j$(nproc)
+ibv_rc_pingpong -d rxe0 -g 0
+nvim .config
+make -j$(nproc)
+ibv_rc_pingpong -d rxe0 -g 0
+nvim .config
+make -j$(nproc)
+make menuconfig
+make
+[200~# Clean up any potential "ghost" modules
+make clean
+# Rebuild the kernel image
+make -j$(nproc) bzImage
+ibv_rc_pingpong -d rxe0 -g 0
+ibv_rc_pingpong -d rxe0 -g 1
+cd
+# Create a compressed tarball of your capstone directory
+tar -czvf rdma_project_backup.tar.gz ~/capstone/rdma/
+# 1. Copy the kernel config into your project folder and give it a clear name
+cp ~/linux/.config ~/capstone/rdma/linux_kernel_config.backup
+# 2. Re-run the exact same tar command to overwrite the old archive with the new contents
+tar -czvf rdma_project_backup.tar.gz ~/capstone/rdma/
+# 1. Copy the bootable kernel image into your project folder
+cp ~/linux/arch/x86/boot/bzImage ~/capstone/rdma/
+# 2. Re-run the tar command to package everything together
+tar -czvf rdma_project_backup.tar.gz ~/capstone/rdma/
+ls
+whoami
+ip a
+hostname -I
+ls
+cd linux
+ls
+cd ..
+l
+ls -asudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+[200~# 1. Create the bridge interface
+sudo ip link add name br0 type bridge
+# 1. Create the bridge interface
+sudo ip link add name br0 type bridge
+# 2. Give it the IP address your VM expects as a gateway
+sudo ip addr add 192.168.100.1/24 dev br0
+# 3. Bring the interface up
+sudo ip link set br0 up
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+# 1. Go to your project folder and ensure the C code is freshly compiled
+cd ~/capstone/rdma/
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+# 2. Copy the fresh binary to the VM's staging folder
+cp rdma_arbitrator ~/initfs/root/
+# 3. Delete that problematic rxe.driver file from the staging folder so it never boots again
+rm -f ~/initfs/etc/libibverbs.d/rxe.driver
+# 4. Navigate to the staging folder and repackage the image directly into your project folder
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+# 5. Go back to the project folder and boot QEMU
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+nvim
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+gcc rdma_.c -o rdma_arbitrator -libverbs
+ls
+gcc rdma_verbs.c -o rdma_arbitrator -libverbs
+gcc rmda_verbs.c -o rdma_arbitrator -libverbs
+./rdma_arbitrator 
+ls
+cd capstone
+ls 
+cd rdma
+ls
+cd ..
+mkdir share
+cd share
+code 
+cd
+;s
+ls
+mv rdma_verbs.c /capstone/
+mv rmda_verbs.c /capstone/
+mv rmda_verbs.c capstone/
+ls
+cd capstone
+ls
+code .
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+cd ~/capstone/rdma/
+# Create a root user directory inside the VM filesystem if it doesn't exist
+mkdir -p initfs/root
+# Copy both the source code and the compiled executable
+cp rdma_arbitrator.c initfs/root/
+cp rdma_arbitrator initfs/root/
+cd ~/capstone/rdma/
+mkdir -p initfs/root
+cp ./capstone/share/rdma_arbitrator.c initfs/root/
+cp ~/capstone/share/rdma_arbitrator.c initfs/root/
+cp ~/capstone/rdma_arbitrator.c initfs/root/
+cp ~/capstone/rdma_arbitrator initfs/root/
+code initfs/init
+cd
+code initfs/init
+cd capstone/
+cd initfs
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../initrd.img
+cd ..
+cd ~/capstone/rdma/
+./rdma_arbitrator
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+cp rdma_arbitrator ~/initfs/root/
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+cd
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+./rdma_arbitrator 
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+CD
+cd
+cp rdma_arbitrator ~/initfs/root/
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+# 1. Go to your working directory and enforce a fresh compile
+cd ~/capstone/rdma/
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+# 2. Overwrite the old binary in the VM's staging folder with this fresh one
+cp rdma_arbitrator ~/initfs/root/
+# 3. Navigate to the staging folder and repackage the image
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+# 4. Navigate back and boot the VM with the fresh image
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+# 1. Go to your working directory and enforce a fresh compile
+cd ~/capstone/rdma/
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+# 2. Overwrite the old binary in the VM's staging folder with this fresh one
+cp rdma_arbitrator ~/initfs/root/
+# 3. Navigate to the staging folder and repackage the image
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+# 4. Navigate back and boot the VM with the fresh image
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+# 1. Navigate to your staging folder
+cd ~/initfs/
+# 2. Repackage the image directly into your project folder
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+# 3. Navigate back to your project folder and boot the VM
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+./rdma_arbitrator \
+./rdma_arbitrator 
+# 1. Compile the new master script
+cd ~/capstone/rdma/
+gcc rdma_arbitrator.c -o rdma_arbitrator -libverbs
+# 2. Copy to the VM staging folder
+cp rdma_arbitrator ~/initfs/root/
+# 3. Zip up the image and boot!
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+./rdma_arbitrator 
+# 1. Compile the new script
+cd ~/capstone/rdma/
+gcc rdma_compute.c -o rdma_compute -libverbs
+# 2. Copy the NEW executable into the VM's staging folder
+cp rdma_compute ~/initfs/root/
+# 3. Zip up the virtual hard drive (this now contains both your arbitrator and compute binaries!)
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+# 4. Boot QEMU!
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+./rdma_compute 
+cd ~/capstone/rdma/
+gcc rdma_compute.c -o rdma_compute -libverbs
+cp rdma_compute ~/initfs/root/
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+./rdma_compute 
+# 1. Compile the new script
+cd ~/capstone/rdma/
+gcc rdma_compute.c -o rdma_compute -libverbs
+# 2. Copy the NEW executable into the VM's staging folder
+cp rdma_compute ~/initfs/root/
+# 3. Zip up the virtual hard drive (this now contains both your arbitrator and compute binaries!)
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+# 4. Boot QEMU!
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -nographic   -enable-kvm
+./rdma_compute 
+cd
+pip install -U "huggingface_hub[cli]" torch transformers accelerate
+huggingface-cli download Qwen/Qwen2.5-7B-Instruct --local-dir ~/qwen_weights
+sudo apt install python3-pip
+pip install -U "huggingface_hub[cli]" torch transformers accelerate
+sudo apt install python3-venv
+python3 -m venv ~/llm_env
+source ~/llm_env/bin/activate
+pip install -U "huggingface_hub[cli]" torch transformers accelerate
+huggingface-cli download Qwen/Qwen2.5-7B-Instruct --local-dir ~/qwen_weights
+pip install -U "huggingface_hub[cli]" torch transformers accelerate
+huggingface-cli download Qwen/Qwen2.5-7B-Instruct --local-dir ~/qwen_weights
+python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Qwen/Qwen2.5-7B-Instruct', local_dir='/home/nitk/qwen_weights')"
+cd ~/initfs/
+find . -print0 | cpio --null -H newc -o | gzip -9 > ~/capstone/rdma/initrd.img
+cd ~/capstone/rdma/
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+cd
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+# 1. Go into your staging folder
+cd ~/initfs/
+# 2. Re-generate the image (Make sure to include the dots!)
+find . -print0 | cpio --null -ov -H newc | gzip -9 > ~/capstone/rdma/initrd.img
+# 3. Double check the size again
+ls -lh ~/capstone/rdma/initrd.img
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/capstone/rdma/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+# 1. Go into your staging folder
+cd ~/initfs/
+# 2. Re-generate the image (Make sure to include the dots!)
+find . -print0 | cpio --null -ov -H newc | gzip -9 > ~/capstone/rdma/initrd.img
+# 3. Double check the size again
+ls -lh ~/capstone/rdma/initrd.img
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+cd
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+./rdma_llm
+sudo ./rdma_llm
+# Move your environment to a place we can share
+cp -r ~/llm_env ~/qwen_weights/python_env
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+cd ~/initfs
+# Find and cpio, ensuring we use 'newc' format which the kernel requires
+find . -print0 | cpio --null -ov -H newc | gzip -9 > ~/capstone/rdma/initrd.img
+sudo qemu-system-x86_64   -m 4G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/capstone/rdma/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+cd
+# 1. Go to your shared folder
+cd ~/qwen_weights/python_env/bin/
+# 2. Delete the shortcut and copy the real file
+rm python3
+cp /usr/bin/python3 ./python3
+# 3. Also copy the standard libraries that Python needs to breathe
+mkdir -p ~/qwen_weights/python_env/lib/x86_64-linux-gnu
+cp /lib/x86_64-linux-gnu/libpython3.12.so.1.0 ~/qwen_weights/python_env/lib/
+cp /lib/x86_64-linux-gnu/libstdc++.so.6 ~/qwen_weights/python_env/lib/
+cd
+# 1. Go into your staging folder
+cd ~/initfs/
+# 2. Re-generate the image (Make sure to include the dots!)
+find . -print0 | cpio --null -ov -H newc | gzip -9 > ~/capstone/rdma/initrd.img
+# 3. Double check the size again
+ls -lh ~/capstone/rdma/initrd.img
+sudo qemu-system-x86_64   -m 2G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/capstone/rdma/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+cd
+# Core Math and C Libraries
+cp /lib/x86_64-linux-gnu/libm.so.6 ~/qwen_weights/python_env/lib/
+cp /lib/x86_64-linux-gnu/libc.so.6 ~/qwen_weights/python_env/lib/
+# Compression and Parsing Libraries (Python needs these for basic functions)
+cp /lib/x86_64-linux-gnu/libz.so.1 ~/qwen_weights/python_env/lib/
+cp /lib/x86_64-linux-gnu/libexpat.so.1 ~/qwen_weights/python_env/lib/
+# Threading and Dynamic Loading (Ignore errors if these don't exist on your specific Ubuntu version)
+cp /lib/x86_64-linux-gnu/libpthread.so.0 ~/qwen_weights/python_env/lib/ 2>/dev/null || true
+cp /lib/x86_64-linux-gnu/libdl.so.2 ~/qwen_weights/python_env/lib/ 2>/dev/null || true
+cp -rn /usr/lib/python3.12/* ~/qwen_weights/python_env/lib/python3.12/
+# 1. The immediate fix for ctypes
+cp -L /usr/lib/x86_64-linux-gnu/libffi.so.8 ~/qwen_weights/python_env/lib/
+# 2. OpenMP (Multi-threading support, PyTorch heavily relies on this)
+cp -L /usr/lib/x86_64-linux-gnu/libgomp.so.1 ~/qwen_weights/python_env/lib/ 2>/dev/null || true
+# 3. NUMA (Memory management for tensors)
+cp -L /usr/lib/x86_64-linux-gnu/libnuma.so.1 ~/qwen_weights/python_env/lib/ 2>/dev/null || true
+# 4. Standard GNU C++ Library (Just in case it asks for the newest version)
+cp -L /usr/lib/x86_64-linux-gnu/libstdc++.so.6 ~/qwen_weights/python_env/lib/ 2>/dev/null || true
+cp -L /lib/x86_64-linux-gnu/libgcc_s.so.1 ~/qwen_weights/python_env/lib/ 2>/dev/null || true
+sudo qemu-system-x86_64   -m 4G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/capstone/rdma/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+source ~/llm_env/bin/activate
+cd ~/capstone/rdma/
+python3 distributed_llm.py
+sudo python3 distributed_llm.py
+sudo /home/nitk/llm_env/bin/python3 distributed_llm.py
+python3 distributed_llm.py
+touch /tmp/llm_buffer.bin
+python3 distributed_llm.py
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+./rdma_llm
+source ~/llm_env/bin/activate
+python3 distributed_llm.py
+# Set the file to the exact 14MB size Python expects
+truncate -s 14680092 /dev/shm/llm_buffer
+sudo truncate -s 14680092 /dev/shm/llm_buffer
+python3 distributed_llm.py
+sudo rm /dev/shm/llm_buffer
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+sudo rm /dev/shm/llm_buffer
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+./rdma_llm
+cp rdma_llm ~/qwen_weights/
+sudo ./rdma_llm
+sudo rm -f /dev/shm/llm_buffer
+sudo ./rdma_llm
+# Go to the folder containing your rootfs directory
+cd ~/capstone/rdma/  # Or wherever your kernel build files live
+# Repack the folder into an initramfs.cpio.gz file
+cd rootfs
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../initramfs.cpio.gz
+cd ..
+sudo qemu-system-x86_64   -m 4G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/capstone/rdma/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+cd rootfs
+cd
+cd rootfs
+cd ~/capstone/rdma/  # Or wherever your kernel build files live
+cd rootfs
+sudo qemu-system-x86_64   -m 4G   -smp 2   -kernel ~/linux/arch/x86/boot/bzImage   -initrd ~/capstone/rdma/initrd.img   -append "console=ttyS0 rdinit=/init"   -netdev bridge,id=net0,br=br0   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=host_weights   -nographic   -enable-kvm
+cd..
+cd ..
+la
+ls
+mkdir AISDN_IT471
+cd AISDN_IT471
+iperf3 --version
+sudo apt install iperf3
+sudo apt install hping3
+gedit monitor.py
+sudo apt install gedit
+sudo apt install mininet
+gedit monitor.py
+dmidecode -t memory
+cd ..
+dmidecode -t memory
+inxi -Fxz
+sudo apt install inxi
+inxi -Fxz
+clear
+inxi -Fxz
+# Make sure your environment is active
+source ~/llm_env/bin/activate
+cd ~/capstone/rdma/
+# Launch the Master Node
+python3 distributed_llm.py
+# 1. Kill any existing C-engines
+sudo killall rdma_llm 2>/dev/null
+# 2. Force the file to 14,680,092 bytes
+sudo truncate -s 14680092 /dev/shm/llm_buffer
+# 3. Verify it worked (The middle number MUST be 14680092)
+ls -l /dev/shm/llm_buffer
+source ~/llm_env/bin/activate
+python3 distributed_llm.py
+# 1. Kill any process touching the mailbox
+sudo fuser -k /dev/shm/llm_buffer
+sudo killall -9 rdma_llm 2>/dev/null
+# 2. Delete the file
+sudo rm -f /dev/shm/llm_buffer
+# 3. Remount the RAM disk to clear "ghost" allocations
+sudo mount -o remount,size=1G /dev/shm
+# Create the 14,680,092 byte file
+sudo truncate -s 14680092 /dev/shm/llm_buffer
+# Set permissions so both C and Python can touch it
+sudo chmod 777 /dev/shm/llm_buffer
+# VERIFY: This must show exactly 14680092
+ls -l /dev/shm/llm_buffer
+source ~/llm_env/bin/activate
+python3 distributed_llm.py
+grep "os.open" distributed_llm.py
+python3 distributed_llm.py
+cp ~/capstone/rdma/distributed_llm.py ~/qwen_weights/
+python3 distributed_llm.py
+cp ~/capstone/rdma/distributed_llm.py ~/qwen_weights/
+python3 distributed_llm.py
+LS
+ls
+cd ..
+ls
+cd ..
+l
+cd qwen_weights/
+ls
+cp ~/capstone/rdma/distributed_llm.py ~/qwen_weights/
+python3 distributed_llm.py
+cp ~/capstone/rdma/distributed_llm.py ~/qwen_weights/
+python3 /mnt/weights/distributed_llm.py
+python3 distributed_llm.py
+if IS_VM:;     MODEL_NAME = "/mnt/weights"; else:;     MODEL_NAME = "/home/nitk/qwen_weights"; 
+cp ~/capstone/rdma/distributed_llm.py ~/qwen_weights/
+python3 distributed_llm.py
+cp ~/capstone/rdma/distributed_llm.py ~/qwen_weights/
+python3 distributed_llm.py
+sudo killall rdma_llm
+sudo ./rdma_llm
+cd capstone/
+cd rdma
+source 
+source ~/llm_env/bin/activate
+
+python3 distributed_llm.py
+sudo killall rdma_llm 2>/dev/null
+python3 distributed_llm.py
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+# 1. Go to your capstone folder
+cd ~/capstone/rdma/
+# 2. Compile the fixed RDMA C-engine
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+# 3. Copy the C-engine and the Python script to the shared folder
+cp rdma_llm ~/qwen_weights/
+cp distributed_llm.py ~/qwen_weights/
+# Launch QEMU
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel bzImage   -initrd initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+CD ..
+cd ..
+cd
+# Launch QEMU
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel bzImage   -initrd initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+cd capstone/
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel bzImage   -initrd initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+find ~ -name "bzImage" 2>/dev/null
+find ~ -name "initramfs.cpio.gz" 2>/dev/null
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel /home/nitk/capstone/rdma/bzImage   -initrd /home/nitk/capstone/initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+ls -lh /home/nitk/capstone/initramfs.cpio.gz
+cd
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel /home/nitk/capstone/rdma/bzImage   -initrd /home/nitk/capstone/initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+sudo killall -9 qemu-system-x86_64
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel /home/nitk/capstone/rdma/bzImage   -initrd /home/nitk/capstone/initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+# This is an example path. Change "rootfs" to whatever your folder is named!
+cd /home/nitk/capstone/rootfs/
+cd ~/rootfs
+find ~ -name "init" -type f 2>/dev/null
+find ~ -name "busybox" -type f 2>/dev/null
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ~/capstone/initramfs.cpio.gz
+cd /home/nitk/initfs
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > /home/nitk/capstone/initramfs.cpio.gz
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel /home/nitk/capstone/rdma/bzImage   -initrd /home/nitk/capstone/initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo ./rdma_llm
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel /home/nitk/capstone/rdma/bzImage   -initrd /home/nitk/capstone/initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+ip a show tap0
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0
+[200~sudo iptables -A INPUT -i tap0 -j ACCEPT
+sudo iptables -A OUTPUT -o tap0 -j ACCEPT~
+sudo iptables -A OUTPUT -o tap0 -j ACCEPT
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo iptables -I INPUT -i tap0 -j ACCEPT
+sudo iptables -I OUTPUT -o tap0 -j ACCEPT
+ping -c 3 192.168.100.2
+cd ~/capstone/rdma/
+sudo killall rdma_llm 2>/dev/null
+sudo ./rdma_llm
+sudo killall -9 rdma_llm 2>/dev/null
+ip a show tap0
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0
+ip a show tap0
+sudo ufw disable
+ping -c 3 192.168.100.2
+cd ~/capstone/rdma/
+sudo killall -9 rdma_llm 2>/dev/null
+sudo ./rdma_llm
+sudo killall -9 rdma_llm distributed_llm.py 2>/dev/null
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+cd ~/capstone/rdma/
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+sudo ufw disable
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+ls /dev/infiniband
+hostname -I
+sudo apt update
+sudo apt install xrdp
+sudo ufw allow 3389/tcp
+sudo apt purge xrdp -y
+sudo gedctl --system rdp enable
+sudo apt install gnome-remote-desktop -y
+sudo grdctl --system rdp enable
+sudo grdctl --system rdp set-credentials nitk 123
+sudo systemctl enable --now gnome-remote-desktop.service
+sudo systemctl restart gnome-remote-desktop.service
+hostname -I
+sudo journalctl -u gnome-remote-desktop.service -n 20 --no-pager
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel /home/nitk/capstone/rdma/bzImage   -initrd /home/nitk/capstone/initramfs.cpio.gz   -nographic   -m 8G   -smp 4   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:56   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+sudo rm /dev/shm/llm_buffer
+# 1. Compile
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+# 2. Run
+sudo ./rdma_llm
+sudo modprobe rdma_rxe
+sudo modprobe ib_uverbs
+# This creates a virtual RDMA device named 'rxe0' linked to your tap0 cable
+sudo rdma link add rxe0 type rxe netdev tap0
+ibv_devices
+# Clear any old memory first
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+# Run the bridge
+sudo ./rdma_llm
+sudo ufw allow 18516/tcp
+sudo ./rdma_llm
+hostname -I
+sudo ./rdma_llm
+sudo ufw allow 18516/tcp
+ibv_devices
+sudo modprobe rdma_rxe
+sudo modprobe ib_uverbs
+sudo rdma link add rxe0 type rxe netdev tap0
+ibv_devices
+sudo ./rdma_llm
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+sudo ./rdma_llm
+cd ~/capstone/rdma/
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+# 1. Go into your root filesystem folder
+cd ~/initfs
+# 2. Pack it into the compressed archive
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ~/capstone/initramfs.cpio.gz
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel ~/capstone/rdma/bzImage   -initrd ~/capstone/initramfs.cpio.gz   -nographic   -m 8G   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo ufw disable
+sudo rdma link add rxe0 type rxe netdev tap0 2>/dev/null
+# Start the Host Bridge
+sudo killall -9 rdma_llm 2>/dev/null
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cd ~/capstone/rdma/
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+# 1. Go into your root filesystem folder
+cd ~/initfs
+# 2. Pack it into the compressed archive
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ~/capstone/initramfs.cpio.gz
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel ~/capstone/rdma/bzImage   -initrd ~/capstone/initramfs.cpio.gz   -nographic   -m 8G   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo ufw disable
+sudo rdma link add rxe0 type rxe netdev tap0 2>/dev/null
+# Start the Host Bridge
+sudo killall -9 rdma_llm 2>/dev/null
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+cd ~/capstone/rdma/
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+# 1. Go into your root filesystem folder
+cd ~/initfs
+# 2. Pack it into the compressed archive
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ~/capstone/initramfs.cpio.gz
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel ~/capstone/rdma/bzImage   -initrd ~/capstone/initramfs.cpio.gz   -nographic   -m 8G   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo ufw disable
+sudo rdma link add rxe0 type rxe netdev tap0 2>/dev/null
+# Start the Host Bridge
+sudo killall -9 rdma_llm 2>/dev/null
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+sudo ./rdma_llm
+cd ~/capstone/rdma/
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+# 1. Go into your root filesystem folder
+cd ~/initfs
+# 2. Pack it into the compressed archive
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ~/capstone/initramfs.cpio.gz
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel ~/capstone/rdma/bzImage   -initrd ~/capstone/initramfs.cpio.gz   -nographic   -m 8G   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo ufw disable
+sudo rdma link add rxe0 type rxe netdev tap0 2>/dev/null
+# Start the Host Bridge
+sudo killall -9 rdma_llm 2>/dev/null
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+sudo ./rdma_llm
+cd ~/capstone/rdma/
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+# 1. Go into your root filesystem folder
+cd ~/initfs
+# 2. Pack it into the compressed archive
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ~/capstone/initramfs.cpio.gz
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel ~/capstone/rdma/bzImage   -initrd ~/capstone/initramfs.cpio.gz   -nographic   -m 8G   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo ufw disable
+sudo rdma link add rxe0 type rxe netdev tap0 2>/dev/null
+# Start the Host Bridge
+sudo killall -9 rdma_llm 2>/dev/null
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+python3 analyzer.py
+python3 decision_engine.py
+python3 decision_engine.py\
+python3 decision_engine.py
+sudo python3 topology.py
+./pox.py flow_monitor forwarding.l2_learning
+sudo python3 topology.py
+sudo mn --controller=remote,ip=127.0.0.1,port=6653         --topo=single,3         --switch=ovs,protocols=OpenFlow13
+sudo mn --controller=remote,ip=127.0.0.1,port=6653 --topo=single,3
+sudo python3 topology.py
+sudo mn --controller=remote,ip=127.0.0.1,port=6653         --topo=single,3         --switch=ovs,protocols=OpenFlow13
+sudo mn --controller=remote,ip=127.0.0.1,port=6653 --topo=single,3
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+pingall
+sudo mn -c
+source sdn-env/bin/activate
+sudo python3 topology.py
+pingall
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo ovs-vsctl --all destroy Controller
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+clear
+sudo python3 topology.py
+clear
+sudo ovs-vsctl --all destroy Controller
+sudo mn -c\
+sudo mn -c
+clear
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo ovs-vsctl --all destroy Controller
+sudo mn -c
+sudo python3 topology.py
+sudo ovs-ofctl -O OpenFlow13 dump-flows s1
+python3 -m venv venv
+source venv/bin/activate
+uit
+quit
+exit venv
+source sdn-env/bin/activate
+sudo ovs-ofctl -O OpenFlow13 dump-flows s1
+source sdn-env/bin/activate
+sudo python3 topology.py
+sudo ovs-vsctl --all destroy Controller
+sudo python3 topology.py
+sudo mn -c
+sudo killall ovs-vswitchd ovsdb-server
+sudo systemctl restart openvswitch-switch
+sudo ovs-vsctl show
+sudo python3 topology.py
+sudo mn -c
+sudo ip link delete s1
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+clear
+sudo python3 topology.py
+sudo mn -c
+clear
+sudo python3 topology.py
+clear
+sudo mn -c
+clear
+sudo python3 topology.py
+sudo mn -c
+clear
+sudo python3 topology.py
+sudo mn -c
+clear
+sudo python3 topology.py
+clear
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+clear
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+ource ~/llm_env/bin/activate && cd ~/qwen_weights/ && python3 distributed_llm.py
+source ~/llm_env/bin/activate && cd ~/qwen_weights/ && python3 distributed_llm.py
+# 1. Give your user ownership of the RDMA memory buffer
+sudo chown nitk:nitk /dev/shm/llm_buffer
+# 2. Ensure it has read/write permissions
+chmod 666 /dev/shm/llm_buffer
+source ~/llm_env/bin/activate
+cd ~/qwen_weights/
+python3 distributed_llm.py
+# 1. Give your user ownership of the RDMA memory buffer
+sudo chown nitk:nitk /dev/shm/llm_buffer
+# 2. Ensure it has read/write permissions
+chmod 666 /dev/shm/llm_buffer
+source ~/llm_env/bin/activate
+cd ~/qwen_weights/
+python3 distributed_llm.py
+cd
+cd capstone/rdma/
+python3 distributed_llm.py
+# 1. Give your user ownership of the RDMA memory buffer
+sudo chown nitk:nitk /dev/shm/llm_buffer
+# 2. Ensure it has read/write permissions
+chmod 666 /dev/shm/llm_buffer
+source ~/llm_env/bin/activate
+cd ~/capstone/rdma
+python3 distributed_llm.py
+cd ..
+ls
+cd AISDN_IT471
+ls
+./controller_runner.sh
+chmod +x controller_runner.sh
+./controller_runner.sh
+chmod +x controller_runner.sh
+./controller_runner.sh
+chmod +x controller_runner.sh
+./controller_runner.sh
+chmod +x controller_runner.sh
+./controller_runner.sh
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y mininet openvswitch-switch
+sudo apt install -y iperf3 hping3 tcpdump
+sudo apt install -y python3-pip
+pip3 install scikit-learn pandas numpy joblib flask
+git clone https://github.com/bisdn/poseidon.git
+cd poseidon
+pip3 install -r requirements.txt
+git clone https://github.com/bisdn/poseidon.git
+git clone git@github.com:bisdn/poseidon.git
+sudo apt update
+sudo apt install -y mininet openvswitch-switch docker.io docker-compose
+sudo usermod -aG docker $USER
+pip3 install faucet
+sudo apt install -y python3-pip
+pip3 install pandas numpy scikit-learn
+pip3 install faucet
+sudo apt install python3-venv -y
+python3 -m venv sdn-env
+source sdn-env/bin/activate
+pip install --upgrade pip
+pip install faucet
+pip install pandas numpy scikit-learn joblib flask
+faucet --help
+faucet faucet.yaml
+ls
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+mkdir -p ~/AISDN_IT471/sdn-env/var/log/faucet
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+sudo ovs-vsctl --all destroy Controller
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+source sdn-env/bin/activate
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+clear
+sudo mn -c
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+clear
+faucet
+clear
+sudo mn -c
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+source sdn-env/bin/activate
+python3 ml/train_model.py
+python3 main.py
+python3 ml/train_model.py
+python3 main.py
+python3 ml/train_model.py
+python3 main.py
+python3 ml/train_model.py
+python3 main.py
+clear
+sudo mn -c
+clear
+python3 ml/train_model.py
+python3 main.py
+python3 ml/train_model.py
+python3 main.py
+python3 ml/train_model.py
+python3 main.py
+python3 ml/train_model.py
+python3 main.py
+sudo mmn -c
+sudo mn -c
+python3 ml/train_model.py
+sudo mn -c
+python3 ml/train_model.py
+python3 main.py
+sudo mn -c
+python3 ml/train_model.py
+python3 main.py
+sudo mn -c
+python3 ml/train_model.py
+python3 main.py
+clear
+python3 ml/train_model.py
+python3 main.py
+sudo mn -c
+clear
+python3 ml/train_model.py
+python3 main.py
+sudo mn -c
+clear
+python3 ml/train_model.py
+python3 main.py
+clear\
+sudo mn -c
+clear
+python3 ml/train_model.py
+python3 main.py
+sudo mn -c
+clear
+python3 ml/train_model.py
+python3 main.py
+sudo python3 main.py
+sudo -E python3 main.py
+python3 ml/train_model.py
+python3 main.py
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+clear
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo ip link set tap0 up
+sudo ip addr add 192.168.100.1/24 dev tap0 2>/dev/null
+sudo ufw disable
+sudo rdma link add rxe0 type rxe netdev tap0 2>/dev/null
+# Start the Host Bridge
+sudo killall -9 rdma_llm 2>/dev/null
+sudo rm /dev/shm/llm_buffer 2>/dev/null
+cd ~/capstone/rdma/
+sudo ./rdma_llm
+cd ~/capstone/rdma/
+gcc rdma_llm.c -o rdma_llm -libverbs -lrt
+cp rdma_llm ~/qwen_weights/
+# 1. Go into your root filesystem folder
+cd ~/initfs
+# 2. Pack it into the compressed archive
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ~/capstone/initramfs.cpio.gz
+sudo qemu-system-x86_64   -enable-kvm   -cpu host   -kernel ~/capstone/rdma/bzImage   -initrd ~/capstone/initramfs.cpio.gz   -nographic   -m 8G   -append "console=ttyS0 root=/dev/ram0 rdinit=/init"   -netdev tap,id=net0,ifname=tap0,script=no,downscript=no   -device virtio-net-pci,netdev=net0   -fsdev local,security_model=passthrough,id=fsdev0,path=/home/nitk/qwen_weights   -device virtio-9p-pci,id=fs0,fsdev=fsdev0,mount_tag=hostshare
+source sdn-env/bin/activate
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+Metrics
+Sz Metrics
+Sz Metrics:
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+ls
+python api_call.py
+python3 api_call.py
+pip install openai
+source sdn-env/bin/activate
+pip install openai
+python3 api_call.py
+clear
+curl -fsSL https://ollama.com/install.sh | sh
+pip install llama-cpp-python
+python3 api_call.py
+pip install groq
+python3 api_call.py
+clear
+python3 api_call.py
+source sdn-env/bin/activate
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+sudo -E sdn-env/bin/python main.py
+sudo mn -c
+clear
+sudo -E sdn-env/bin/python main.py
+source sdn-env/bin/activate
+sudo -E sdn-env/bin/python main.py
+source sdn-env/bin/activate
+sudo python3 topology.py
+source mn  -c
+source mn -c
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+sudo mn -c
+clear
+sudo python3 topology.py
+ls
+cd AISDN_IT471
+sudo -E sdn-env/bin/python main.py 
+source sdn-env/bin/activate
+ls
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c\
+sudo mn -c
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c\
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+pkill faucet
+sudo systemctl restart openvswitch-switch
+pkill faucet
+sudo systemctl restart openvswitch-switch
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+pkill faucet
+sudo systemctl restart openvswitch-switch
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+pkill faucet
+sudo systemctl restart openvswitch-switch
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+pkill faucet
+sudo systemctl restart openvswitch-switch
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+pkill faucet
+sudo systemctl restart openvswitch-switch
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+pkill faucet
+sudo systemctl restart openvswitch-switch
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+sudo mn -c
+
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+faucet
+/home/nitk/AISDN_IT471/sdn-env/bin/python
+/home/nitk/IT447_231AI005/.venv/bin/python
+source .venv/bin/activate
+sudo ./.venv/bin/python3 attacks/syn_flood.py
+python3 main.py
+source .venv/bin/activate
+python3 main.py
+python3 currentmain.py
+clear
+sudo ./.venv/bin/python3 currentmain.py
+clear
+sudo ./.venv/bin/python3 currentmain.py
+clear
+sudo ./.venv/bin/python3 currentmain.py
+clear
+sudo ./.venv/bin/python3 currentmain.py
+clear
+sudo ./.venv/bin/python3 currentmain.py
+clea
+clear
+sudo ./.venv/bin/python3 currentmain.py
+clear
+sudo ./.venv/bin/python3 currentmain.py
+ollama list
+ollama run phi3
+source .venv/bin/activate
+sudo python3 monitoring/packet_sniffer.py
+pip install scapy
+sudo python3 monitoring/packet_sniffer.py
+which scapy
+sudo ./venv/bin/python3 monitoring/packet_sniffer.py
+sudo ./.venv/bin/python3 monitoring/packet_sniffer.py
+c;ear
+clear
+sudo ./.venv/bin/python3 monitoring/packet_sniffer.py
+source venv/bin/activate
+deactivate
+source .venv/bin/activate
+pip install requests
+pip install faucet
+pip install scapy
+clear
+sudo ovs-vsctl show
+clear
+sudo ovs-vsctl show
+ls
+cd IT447_231AI005
+ls
+source .venv/bin/activate
+curl -fsSL https://ollama.com/install.sh | sh
+sudo snao install curl
+sudo snap install curl
+curl -fsSL https://ollama.com/install.sh | sh
+sudo snap uninstall curl
+sudo snap remove  curl
+sudo apt install curl
+which curl
+curl -fsSL https://ollama.com/install.sh | sh
+clear
+curl -fsSL https://ollama.com/install.sh | sh
+ollama --version
+ollama serve
+ollama runphi3
+ollama run phi3
+clear
+sudo faucet faucet.yaml
+pip show faucet
+faucet --version
+sudo faucet faucet.yaml
+which faucet
+sudo pip3 install faucet
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+sudo faucet faucet.yaml
+which faucet
+sudo [200~/home/nitk/IT447_231AI005/.venv/bin/faucet
+sudo ./venv/bin/faucet faucet.yaml
+which faucet
+sudo /home/nitk/IT447_231AI005/.venv/bin/faucet faucet.yaml
+sudo FAUCET_CONFIG=$(pwd)/faucet.yaml
+clear
+sudo FAUCET_CONFIG=$(pwd)/faucet.yaml
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+sudo ./venv/bin/faucet
+clear
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+sudo FAUCET_CONFIG=$(pwd)/faucet.yaml
+export FAUCET_CONFIG=$(pwd)/faucet.yaml
+sudo -E ./venv/bin/faucet
+echo $FAUCET_CONFIG
+pip show faucet
+faucet
+pwd
+sudo /home/nitk/IT447_231AI005/.venv/bin/faucet faucet.yaml
+sudo /home/nitk/IT447_231AI005/.venv/bin/faucet
+sudo /home/nitk/IT447_231AI005/faucet
+sudo /home/nitk/IT447_231AI005/bin/faucet
+sudo /home/nitk/IT447_231AI005/.venv/bin/faucet
+which faucet
+ls -l [200~/home/nitk/IT447_231AI005/.venv/bin/faucet
+ls -l /home/nitk/IT447_231AI005/.venv/bin/faucet
+clear
+ls -l /home/nitk/IT447_231AI005/.venv/bin/faucet
+faucet
+clear
+sudo python3 topology.py
+clear
+sudo --mc c
+sudo --mn c
+clear
+sudo mn c
+clear
+sudo mn -c
+clear
+sudo systemctl restart openvswitch-switch
+sudo systemctl status openvswitch-switch
+sudo -ovs-vsctl show
+sudo ovs-vsctl show
+sudo mn --topo single,3 --test pingall
+clear
+sudo mn -c
+clear
+sudo mn -c
+clear
+sudo python3 topology.py
+sudo mn -c
+clear
+sudo python3 topology.py
+sudo mn -c
+sudo python3 topology.py
+clear
+sudo mn -c
+sudo python3 topology.py
+clear
+sudo python3 topology.py
+clear
+sudo mn -c
+sudo python3 top.py
+clear
+sudo mn -c
+sudo python3 top.py
+clear
+sudo mn -c
+sudo python3 top.py
+clear
+sudo mn -c
+sudo python3 top.py
+clear
+sudo mn -c
+clear
+sudo python3 top.py
+clear
+sudo mn -c
+sudo python3 top.py
+pip install jupyter_http_over_ws
+jupyter serverextension enable --py jupyter_http_over_ws
+sudo apt update
+sudo apt install python3-venv python3-full
+sudo apt update
+sudo apt install python3-venv python3-full
+pip install --upgrade pip
+pip install notebook jupyter_http_over_ws
+jupyter server extension enable --py jupyter_http_over_ws
+jupyter notebook   --NotebookApp.allow_origin='https://google.com'   --port=8888   --NotebookApp.port_retries=0
+sudo apt install jupyter-core
+jupyter notebook   --NotebookApp.allow_origin='https://google.com'   --port=8888   --NotebookApp.port_retries=0
+[200~sudo apt update
+sudo apt update
+sudo apt install -y openjdk-17-jdk
+java -version
+nvidia-smi
+prime-select query
+top
+ls /home/nitk/GO_CFExplainer/graphs | wc -l
+sudo reboot
+source ~/colab-env/bin/activate
+jupyter notebook   --NotebookApp.allow_origin='https://colab.research.google.com'   --port=8888   --NotebookApp.port_retries=0
+nvidia-smi
+lspci | grep -i nvidia
+nvidia-smi
+lsmod | grep nvidia
+dmesg | grep -i nvidia
+uname -r
+dpkg -l | grep nvidia
+ubuntu-drivers devices
+uptime -s
+uname -r
+cat /proc/driver/nvidia/version
+sudo modprobe nvidia
+dkms status
+dpkg -l | grep -E "nvidia|linux-headers"
+ls -l /usr/src | grep 7.0
+sudo apt --fix-broken install
+apt-cache policy linux-headers-7.0.0-28-generic
+sudo apt install linux-headers-7.0.0-28-generic linux-headers-7.0.0-28
+sudo apt install linux-headers-7.0.0-28-generic
+sudo apt --fix-broken install
+nvidia-smi
+sudo reboot
+nvidia-smi
+source colab-env/bin/activate
+jupyter notebook   --NotebookApp.allow_origin='https://colab.research.google.com'   --port=8888   --NotebookApp.port_retries=0
+clear
+jupyter notebook   --NotebookApp.allow_origin='https://colab.research.google.com'   --port=8888   --NotebookApp.port_retries=0
+ls /home/nitk/GO_CFExplainer/graphs | wc -l
+source colab-env/bin/activate
+jupyter notebook   --NotebookApp.allow_origin='https://colab.research.google.com'   --port=8888   --NotebookApp.port_retries=0
+ls -l /home/nitk/bin/joern/joern-cli
+ls -l /home/nitk/bin/joern/joern-cli/joern-parse
+cd /home/nitk
+chmod +x joern-install.sh
+./joern-install.sh
+/home/nitk/bin/joern/joern-cli/joern --version
+source colab-env/bin/activate
+jupyter notebook   --NotebookApp.allow_origin='https://colab.research.google.com'   --port=8888   --NotebookApp.port_retries=0
+ls -l /home/nitk/bin/joern/joern-cli
+which joern
+/home/nitk/bin/joern/joern-cli/joern --version
+export PATH="/home/nitk/bin/joern/joern-cli:$PATH"
+which joern
+joern
+echo 'export PATH="/home/nitk/bin/joern/joern-cli:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+which joern
+proc
+w
+who
+ip
+ip addr
+docker lis
+docker list
+docker --help
+docker ps
+ip addr
+sudo systemctl status ssh
+sudo apt update && sudo apt install openssh-server -y
+sudo systemctl enable --now ssh
+cut -d: -f1 /etc/passwd
+fastfetch
+ls
+cls
+ls
+scp
