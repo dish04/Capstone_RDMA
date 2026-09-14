@@ -6,80 +6,83 @@
 /bin/mount -t devtmpfs devtmpfs /dev
 /bin/mount -t configfs none /sys/kernel/config
 
-echo "Configuring Network and Soft-RoCE..."
+# 2. Extract VM parameters from /proc/cmdline
+CMDLINE=$(cat /proc/cmdline)
+VM_ID=$(echo "$CMDLINE" | grep -o 'vm_id=[0-9]*' | cut -d= -f2)
+if [ -z "$VM_ID" ]; then
+    VM_ID=1
+fi
 
-# 2. Bring up the network wire
+TOTAL_NODES=$(echo "$CMDLINE" | grep -o 'total_nodes=[0-9]*' | cut -d= -f2)
+if [ -z "$TOTAL_NODES" ]; then
+    TOTAL_NODES=2
+fi
+
+AUTORUN=$(echo "$CMDLINE" | grep -o 'autorun=[^ ]*' | cut -d= -f2)
+
+IP_ADDR="192.168.100.$((VM_ID + 1))"
+
+echo "================================================="
+echo "INITIALIZING RDMA VIRTUAL NODE $VM_ID OF $TOTAL_NODES"
+echo "ASSIGNED IP: $IP_ADDR"
+echo "================================================="
+
+# 3. Bring up network interface
 /bin/ip link set lo up
-/bin/ip addr add 192.168.100.2/24 dev eth0
+/bin/ip addr add ${IP_ADDR}/24 dev eth0
 /bin/ip link set eth0 up
 /bin/ip link set eth0 mtu 1500
 
-# 3. Give the kernel 2 seconds to wake the hardware up
-/bin/sleep 2 
+# 4. Give the kernel a moment to initialize the link
+/bin/sleep 1
 
-# 4. Bind the RDMA driver to the ethernet card
+# 5. Bind Soft-RoCE RDMA driver to eth0
 /bin/rdma link add rxe0 type rxe netdev eth0
+/bin/sleep 1
 
-# MAGIC FIX: Give the kernel 2 seconds to actually create the hidden sysfs folders!
-/bin/sleep 2 
-
-# 5. Dynamically extract the exact Hardware IDs for the node
+# 6. Build Infiniband device node
 mkdir -p /dev/infiniband
-DEV_NUM=$(cat /sys/class/infiniband_verbs/uverbs0/dev)
-MAJOR=$(echo $DEV_NUM | cut -d: -f1)
-MINOR=$(echo $DEV_NUM | cut -d: -f2)
+if [ -f /sys/class/infiniband_verbs/uverbs0/dev ]; then
+    DEV_NUM=$(cat /sys/class/infiniband_verbs/uverbs0/dev)
+    MAJOR=$(echo "$DEV_NUM" | cut -d: -f1)
+    MINOR=$(echo "$DEV_NUM" | cut -d: -f2)
+    mknod /dev/infiniband/uverbs0 c "$MAJOR" "$MINOR" 2>/dev/null || true
+    chmod -R 777 /dev/infiniband
+fi
 
-# 6. Build the physical bridge to the kernel
-mknod /dev/infiniband/uverbs0 c $MAJOR $MINOR
-chmod -R 777 /dev/infiniband
-
-# 7. Give the libibverbs library the glasses it needs to see the hardware
+# 7. Configure libibverbs driver
 mkdir -p /etc/libibverbs.d
 echo "driver rxe" > /etc/libibverbs.d/rxe.driver
 
-echo "------------------------------------------------"
-echo "RDMA NODE READY: 192.168.100.2"
-echo "------------------------------------------------"
-
+# 8. Mount 9p shared folder for model weights & python environment
 mkdir -p /mnt/weights
-mount -t 9p -o trans=virtio,version=9p2000.L host_weights /mnt/weights
+mount -t 9p -o trans=virtio,version=9p2000.L hostshare /mnt/weights 2>/dev/null || \
+mount -t 9p -o trans=virtio,version=9p2000.L host_weights /mnt/weights 2>/dev/null || true
 
-# 1. Add our folder to the search path
-export PATH=/mnt/weights/python_env/bin:$PATH
-
-# 2. CRITICAL: Tell the VM where the .so files are
-export LD_LIBRARY_PATH=/mnt/weights/python_env/lib:$LD_LIBRARY_PATH
-
-# 3. Tell Python where the packages (Torch/Transformers) are
-export PYTHONPATH=/mnt/weights/python_env/lib/python3.12/site-packages
-# 8. Hand over control to the user ONLY after everything is built
-# 1. Mount the RAM-disk for the mailbox
-mkdir -p /dev/shm && mount -t tmpfs tmpfs /dev/shm 2>/dev/null
-
-# 2. Set the environment variables
-export USER=root LOGNAME=root
-export PATH=/mnt/weights/python_env/bin:$PATH
-export LD_LIBRARY_PATH=/mnt/weights/python_env/lib:$LD_LIBRARY_PATH
-export PYTHONPATH=/mnt/weights/python_env/lib/python3.12/site-packages
-export PYTHONHOME=/mnt/weights/python_env
-
-# 3. PyTorch Cache fixes
-export TORCHINDUCTOR_CACHE_DIR=/tmp/torch_cache
-export TRITON_CACHE_DIR=/tmp/triton_cache
-# 1. Mount the shared folder
-mkdir -p /mnt/weights
-mount -t 9p -o trans=virtio hostshare /mnt/weights -oversion=9p2000.L
-
-# 2. Mount the RAM disk
+# 9. Mount RAM-disk for shared memory IPC
 mkdir -p /dev/shm
-mount -t tmpfs tmpfs /dev/shm
+mount -t tmpfs -o size=2G tmpfs /dev/shm 2>/dev/null || true
 
-# 3. Restore Python Identity
+# 10. Configure Environment Variables
 export USER=root LOGNAME=root
-export PATH=/mnt/weights/python_env/bin:$PATH
+export PATH=/mnt/weights/python_env/bin:/bin:/usr/bin:$PATH
 export LD_LIBRARY_PATH=/mnt/weights/python_env/lib:$LD_LIBRARY_PATH
 export PYTHONPATH=/mnt/weights/python_env/lib/python3.12/site-packages
 export PYTHONHOME=/mnt/weights/python_env
 export TORCHINDUCTOR_CACHE_DIR=/tmp/torch_cache
 export TRITON_CACHE_DIR=/tmp/triton_cache
+export VM_ID="$VM_ID"
+export TOTAL_NODES="$TOTAL_NODES"
+
+echo "-------------------------------------------------"
+echo "NODE READY: VM_ID=$VM_ID | IP=$IP_ADDR | RDMA=rxe0"
+echo "-------------------------------------------------"
+
+# 11. Execute autorun script if specified, otherwise interactive shell
+if [ -n "$AUTORUN" ] && [ -f "$AUTORUN" ]; then
+    echo "Executing autorun script: $AUTORUN"
+    exec sh "$AUTORUN"
+fi
+
 exec /bin/sh
+

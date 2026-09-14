@@ -1,6 +1,15 @@
-obj-m += rdma_arbitrator.o
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+CC ?= gcc
+CFLAGS ?= -Wall -O3
+LIBS ?= -libverbs -lrt
+
+all: rdma_llm rdma_pipeline
+
+rdma_llm: rdma_llm.c
+	$(CC) $(CFLAGS) rdma_llm.c -o rdma_llm $(LIBS)
+
+rdma_pipeline: rdma_pipeline.c
+	$(CC) $(CFLAGS) rdma_pipeline.c -o rdma_pipeline $(LIBS)
 
 clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	rm -f rdma_llm rdma_pipeline *.o
+
