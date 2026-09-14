@@ -10,21 +10,22 @@ LOGS_DIR="$WORKSPACE_ROOT/logs"
 
 # Paths to Kernel, Initrd, and Shared Model Weights
 # Automatically checks both ~/capstone / ~/qwen_weights and repo paths
-if [[ -z "$KERNEL" ]]; then
-    if [[ -f "$HOME/capstone/rdma/bzImage" ]]; then
-        KERNEL="$HOME/capstone/rdma/bzImage"
-    else
-        KERNEL="$WORKSPACE_ROOT/capstone/rdma/bzImage"
+if [[ -z "$INITRD" ]]; then
+    if [[ -f "$WORKSPACE_ROOT/capstone/initramfs.cpio.gz" ]]; then
+        INITRD="$WORKSPACE_ROOT/capstone/initramfs.cpio.gz"
+    elif [[ -f "$HOME/capstone/initramfs.cpio.gz" ]]; then
+        INITRD="$HOME/capstone/initramfs.cpio.gz"
     fi
 fi
 
-if [[ -z "$INITRD" ]]; then
-    if [[ -f "$HOME/capstone/initramfs.cpio.gz" ]]; then
-        INITRD="$HOME/capstone/initramfs.cpio.gz"
-    else
-        INITRD="$WORKSPACE_ROOT/capstone/initramfs.cpio.gz"
+if [[ -z "$KERNEL" ]]; then
+    if [[ -f "$WORKSPACE_ROOT/capstone/rdma/bzImage" ]]; then
+        KERNEL="$WORKSPACE_ROOT/capstone/rdma/bzImage"
+    elif [[ -f "$HOME/capstone/rdma/bzImage" ]]; then
+        KERNEL="$HOME/capstone/rdma/bzImage"
     fi
 fi
+
 
 if [[ -z "$WEIGHTS_DIR" ]]; then
     if [[ -d "$HOME/qwen_weights" ]]; then
@@ -148,21 +149,27 @@ start_cluster() {
             -pidfile "$pid_file" \
             -daemonize
 
-
-        echo "[VM $i] Started (PID: $(cat "$pid_file" 2>/dev/null || echo 'Unknown'))"
+        sudo chmod 666 "$pid_file" 2>/dev/null || true
+        local pid=$(sudo cat "$pid_file" 2>/dev/null || cat "$pid_file" 2>/dev/null || echo 'Unknown')
+        echo "[VM $i] Started (PID: $pid)"
     done
 
-    echo "Waiting 6 seconds for VMs to boot and configure network..."
-    sleep 6
-
-    echo "-------------------------------------------------"
-    echo "Verifying Network Reachability:"
+    echo "Waiting for VMs to boot and configure network..."
     for ((i=1; i<=num_nodes; i++)); do
         local target_ip="192.168.100.$((i + 1))"
-        if ping -c 1 -W 2 "$target_ip" >/dev/null 2>&1; then
-            echo "  [✓] VM $i ($target_ip) is ONLINE"
+        local online=0
+        echo -n "  -> Probing VM $i ($target_ip)... "
+        for attempt in {1..20}; do
+            if ping -c 1 -W 1 "$target_ip" >/dev/null 2>&1; then
+                online=1
+                break
+            fi
+            sleep 1
+        done
+        if [[ $online -eq 1 ]]; then
+            echo "[✓] ONLINE"
         else
-            echo "  [!] VM $i ($target_ip) did not respond yet (still booting, check $LOGS_DIR/vm${i}.log)"
+            echo "[!] Did not respond yet (check $LOGS_DIR/vm${i}.log)"
         fi
     done
     echo "================================================="
@@ -173,10 +180,12 @@ stop_cluster() {
     echo "Stopping all QEMU cluster instances..."
     for pid_file in /tmp/qemu_vm*.pid; do
         if [[ -f "$pid_file" ]]; then
-            local pid=$(cat "$pid_file")
-            echo "Terminating VM PID $pid..."
-            sudo kill -9 "$pid" 2>/dev/null || true
-            rm -f "$pid_file"
+            local pid=$(sudo cat "$pid_file" 2>/dev/null || cat "$pid_file" 2>/dev/null)
+            if [[ -n "$pid" ]]; then
+                echo "Terminating VM PID $pid..."
+                sudo kill -9 "$pid" 2>/dev/null || true
+            fi
+            sudo rm -f "$pid_file"
         fi
     done
 
@@ -221,8 +230,8 @@ status_cluster() {
     for pid_file in /tmp/qemu_vm*.pid; do
         if [[ -f "$pid_file" ]]; then
             local id=$(basename "$pid_file" | tr -dc '0-9')
-            local pid=$(cat "$pid_file")
-            if ps -p "$pid" >/dev/null 2>&1; then
+            local pid=$(sudo cat "$pid_file" 2>/dev/null || cat "$pid_file" 2>/dev/null)
+            if [[ -n "$pid" ]] && ps -p "$pid" >/dev/null 2>&1; then
                 local ip="192.168.100.$((id + 1))"
                 local ping_res="OFFLINE"
                 if ping -c 1 -W 1 "$ip" >/dev/null 2>&1; then
@@ -233,6 +242,7 @@ status_cluster() {
             fi
         fi
     done
+
     if [[ $running -eq 0 ]]; then
         echo "   No active VM instances."
     fi
