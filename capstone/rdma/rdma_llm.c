@@ -58,8 +58,12 @@ struct rdma_connection_data exchange_keys_via_tcp(int is_server, const char *ser
         printf("[TCP] Waiting for VM to connect on port %d...\n", TCP_PORT);
         connfd = accept(sockfd, NULL, NULL);
         
-        read(connfd, &remote_data, sizeof(struct rdma_connection_data));
-        write(connfd, local_data, sizeof(struct rdma_connection_data));
+        if (read(connfd, &remote_data, sizeof(struct rdma_connection_data)) <= 0) {
+            perror("read failed");
+        }
+        if (write(connfd, local_data, sizeof(struct rdma_connection_data)) <= 0) {
+            perror("write failed");
+        }
         close(connfd);
     } else {
         servaddr.sin_addr.s_addr = inet_addr(server_ip);
@@ -67,10 +71,15 @@ struct rdma_connection_data exchange_keys_via_tcp(int is_server, const char *ser
         while (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0) {
             usleep(100000);
         }
-        write(sockfd, local_data, sizeof(struct rdma_connection_data));
-        read(sockfd, &remote_data, sizeof(struct rdma_connection_data));
+        if (write(sockfd, local_data, sizeof(struct rdma_connection_data)) <= 0) {
+            perror("write failed");
+        }
+        if (read(sockfd, &remote_data, sizeof(struct rdma_connection_data)) <= 0) {
+            perror("read failed");
+        }
     }
     close(sockfd);
+
     printf("[TCP] Handshake Complete!\n");
     return remote_data;
 }

@@ -54,8 +54,12 @@ struct rdma_connection_data exchange_keys_server(int port, struct rdma_connectio
     printf("[TCP-Server] Awaiting RDMA handshake on port %d...\n", port);
     connfd = accept(sockfd, NULL, NULL);
 
-    read(connfd, &remote_data, sizeof(struct rdma_connection_data));
-    write(connfd, local_data, sizeof(struct rdma_connection_data));
+    if (read(connfd, &remote_data, sizeof(struct rdma_connection_data)) <= 0) {
+        perror("read failed");
+    }
+    if (write(connfd, local_data, sizeof(struct rdma_connection_data)) <= 0) {
+        perror("write failed");
+    }
     close(connfd);
     close(sockfd);
     printf("[TCP-Server] Handshake on port %d successful!\n", port);
@@ -78,9 +82,14 @@ struct rdma_connection_data exchange_keys_client(const char *server_ip, int port
         usleep(100000); // 100ms retry
     }
 
-    write(sockfd, local_data, sizeof(struct rdma_connection_data));
-    read(sockfd, &remote_data, sizeof(struct rdma_connection_data));
+    if (write(sockfd, local_data, sizeof(struct rdma_connection_data)) <= 0) {
+        perror("write failed");
+    }
+    if (read(sockfd, &remote_data, sizeof(struct rdma_connection_data)) <= 0) {
+        perror("read failed");
+    }
     close(sockfd);
+
     printf("[TCP-Client] Handshake to %s:%d successful!\n", server_ip, port);
     return remote_data;
 }
@@ -167,8 +176,16 @@ int main(int argc, char *argv[]) {
 
     // 1. Shared Memory Mailbox Setup
     int fd = shm_open("llm_buffer", O_CREAT | O_RDWR, 0666);
-    if (fd == -1) { perror("shm_open failed"); return 1; }
-    ftruncate(fd, SHARED_MEM_SIZE);
+    if (fd == -1) {
+        perror("shm_open failed");
+        return 1;
+    }
+    if (ftruncate(fd, SHARED_MEM_SIZE) == -1) {
+        perror("ftruncate failed");
+        return 1;
+    }
+
+
 
     struct llm_shared_pool *pool = mmap(NULL, SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (pool == MAP_FAILED) { perror("mmap failed"); return 1; }
