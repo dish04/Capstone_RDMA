@@ -1,24 +1,34 @@
 #!/bin/busybox sh
 
-# 1. Mount essential filesystems
-/bin/mount -t proc none /proc
-/bin/mount -t sysfs none /sys
-/bin/mount -t devtmpfs devtmpfs /dev
-/bin/mount -t configfs none /sys/kernel/config
+# Export initial standard search PATH
+export PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+# Install all busybox symlinks into /bin
+/bin/busybox --install -s /bin 2>/dev/null || true
+
+# Ensure all mount points and essential system directories exist
+/bin/busybox mkdir -p /proc /sys /dev /sys/kernel/config /dev/infiniband /dev/shm /etc/libibverbs.d /mnt/weights /tmp /root /sbin 2>/dev/null || true
+
+# 1. Mount essential kernel filesystems
+/bin/mount -t proc none /proc 2>/dev/null || true
+/bin/mount -t sysfs none /sys 2>/dev/null || true
+/bin/mount -t devtmpfs devtmpfs /dev 2>/dev/null || true
+/bin/mount -t configfs none /sys/kernel/config 2>/dev/null || true
 
 # 2. Extract VM parameters from /proc/cmdline
-CMDLINE=$(cat /proc/cmdline)
-VM_ID=$(echo "$CMDLINE" | grep -o 'vm_id=[0-9]*' | cut -d= -f2)
-if [ -z "$VM_ID" ]; then
-    VM_ID=1
-fi
+VM_ID=1
+TOTAL_NODES=2
+AUTORUN=""
 
-TOTAL_NODES=$(echo "$CMDLINE" | grep -o 'total_nodes=[0-9]*' | cut -d= -f2)
-if [ -z "$TOTAL_NODES" ]; then
-    TOTAL_NODES=2
+if [ -f /proc/cmdline ]; then
+    for arg in $(cat /proc/cmdline 2>/dev/null || /bin/busybox cat /proc/cmdline 2>/dev/null); do
+        case "$arg" in
+            vm_id=*) VM_ID="${arg#vm_id=}" ;;
+            total_nodes=*) TOTAL_NODES="${arg#total_nodes=}" ;;
+            autorun=*) AUTORUN="${arg#autorun=}" ;;
+        esac
+    done
 fi
-
-AUTORUN=$(echo "$CMDLINE" | grep -o 'autorun=[^ ]*' | cut -d= -f2)
 
 IP_ADDR="192.168.100.$((VM_ID + 1))"
 
@@ -28,44 +38,46 @@ echo "ASSIGNED IP: $IP_ADDR"
 echo "================================================="
 
 # 3. Bring up network interface
-/bin/ip link set lo up
-/bin/ip addr add ${IP_ADDR}/24 dev eth0
-/bin/ip link set eth0 up
-/bin/ip link set eth0 mtu 1500
+/bin/ip link set lo up 2>/dev/null || true
+/bin/ip addr add ${IP_ADDR}/24 dev eth0 2>/dev/null || true
+/bin/ip link set eth0 up 2>/dev/null || true
+/bin/ip link set eth0 mtu 1500 2>/dev/null || true
 
 # 4. Give the kernel a moment to initialize the link
-/bin/sleep 1
+/bin/sleep 1 2>/dev/null || true
 
 # 5. Bind Soft-RoCE RDMA driver to eth0
-/bin/rdma link add rxe0 type rxe netdev eth0
-/bin/sleep 1
+/bin/rdma link add rxe0 type rxe netdev eth0 2>/dev/null || true
+/bin/sleep 1 2>/dev/null || true
 
 # 6. Build Infiniband device node
-mkdir -p /dev/infiniband
+/bin/busybox mkdir -p /dev/infiniband 2>/dev/null || true
 if [ -f /sys/class/infiniband_verbs/uverbs0/dev ]; then
-    DEV_NUM=$(cat /sys/class/infiniband_verbs/uverbs0/dev)
-    MAJOR=$(echo "$DEV_NUM" | cut -d: -f1)
-    MINOR=$(echo "$DEV_NUM" | cut -d: -f2)
-    mknod /dev/infiniband/uverbs0 c "$MAJOR" "$MINOR" 2>/dev/null || true
-    chmod -R 777 /dev/infiniband
+    DEV_NUM=$(cat /sys/class/infiniband_verbs/uverbs0/dev 2>/dev/null || /bin/busybox cat /sys/class/infiniband_verbs/uverbs0/dev 2>/dev/null)
+    MAJOR="${DEV_NUM%:*}"
+    MINOR="${DEV_NUM#*:}"
+    if [ -n "$MAJOR" ] && [ -n "$MINOR" ]; then
+        /bin/busybox mknod /dev/infiniband/uverbs0 c "$MAJOR" "$MINOR" 2>/dev/null || true
+    fi
+    /bin/busybox chmod -R 777 /dev/infiniband 2>/dev/null || true
 fi
 
 # 7. Configure libibverbs driver
-mkdir -p /etc/libibverbs.d
-echo "driver rxe" > /etc/libibverbs.d/rxe.driver
+/bin/busybox mkdir -p /etc/libibverbs.d 2>/dev/null || true
+echo "driver rxe" > /etc/libibverbs.d/rxe.driver 2>/dev/null || true
 
 # 8. Mount 9p shared folder for model weights & python environment
-mkdir -p /mnt/weights
+/bin/busybox mkdir -p /mnt/weights 2>/dev/null || true
 mount -t 9p -o trans=virtio,version=9p2000.L hostshare /mnt/weights 2>/dev/null || \
 mount -t 9p -o trans=virtio,version=9p2000.L host_weights /mnt/weights 2>/dev/null || true
 
 # 9. Mount RAM-disk for shared memory IPC
-mkdir -p /dev/shm
+/bin/busybox mkdir -p /dev/shm 2>/dev/null || true
 mount -t tmpfs -o size=2G tmpfs /dev/shm 2>/dev/null || true
 
 # 10. Configure Environment Variables
 export USER=root LOGNAME=root
-export PATH=/mnt/weights/python_env/bin:/bin:/usr/bin:$PATH
+export PATH=/mnt/weights/python_env/bin:/bin:/usr/bin:/sbin:$PATH
 export LD_LIBRARY_PATH=/mnt/weights/python_env/lib:$LD_LIBRARY_PATH
 export PYTHONPATH=/mnt/weights/python_env/lib/python3.12/site-packages
 export PYTHONHOME=/mnt/weights/python_env

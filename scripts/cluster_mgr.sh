@@ -109,9 +109,10 @@ start_cluster() {
     setup_host_rdma
 
     # Ensure files are synced to weights folder
-    cp -u "$WORKSPACE_ROOT/capstone/rdma/distributed_pipeline.py" "$WEIGHTS_DIR/" 2>/dev/null || true
+    cp -f "$WORKSPACE_ROOT/capstone/rdma/distributed_pipeline.py" "$WEIGHTS_DIR/" 2>/dev/null || true
+    cp -f "$WORKSPACE_ROOT/capstone/rdma/rdma_pipeline.c" "$WEIGHTS_DIR/" 2>/dev/null || true
     if [[ -f "$WORKSPACE_ROOT/capstone/rdma/rdma_pipeline" ]]; then
-        cp -u "$WORKSPACE_ROOT/capstone/rdma/rdma_pipeline" "$WEIGHTS_DIR/" 2>/dev/null || true
+        cp -f "$WORKSPACE_ROOT/capstone/rdma/rdma_pipeline" "$WEIGHTS_DIR/" 2>/dev/null || true
     fi
 
     for ((i=1; i<=num_nodes; i++)); do
