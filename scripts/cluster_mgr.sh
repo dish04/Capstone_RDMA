@@ -186,11 +186,22 @@ start_cluster() {
         fi
     done
 
-    echo "Ensuring VM Worker Services are active..."
+    echo "Waiting for VM Worker Services (port 18000)..."
     for ((i=1; i<=num_nodes; i++)); do
-        local sock_file="/tmp/vm${i}_console.sock"
-        if [[ -S "$sock_file" ]]; then
-            printf "\npython3 /mnt/weights/vm_worker.py --vm-id %d --port 18000 >/tmp/vm_worker.log 2>&1 &\n" "$i" | nc -U "$sock_file" 2>/dev/null || true
+        local target_ip="192.168.100.$((i + 1))"
+        local ready=0
+        for attempt in {1..10}; do
+            if curl -s -m 1 "http://${target_ip}:18000/health" >/dev/null 2>&1 || \
+               python3 -c "import urllib.request; urllib.request.urlopen('http://${target_ip}:18000/health', timeout=1)" >/dev/null 2>&1; then
+                ready=1
+                break
+            fi
+            sleep 0.5
+        done
+        if [[ $ready -eq 1 ]]; then
+            echo "  [✓] VM $i Worker Service is READY (http://${target_ip}:18000)"
+        else
+            echo "  [!] VM $i Worker Service starting up in background..."
         fi
     done
 

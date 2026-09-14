@@ -150,6 +150,7 @@ def run_single_iteration_cluster(total_nodes, backend, prompt_seq_len, max_token
                 if os.path.exists(sock_file):
                     try:
                         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+                            s.settimeout(0.5)
                             s.connect(sock_file)
                             s.sendall(f"\npython3 /mnt/weights/vm_worker.py --vm-id {vm_id} --port 18000 >/tmp/vm_worker.log 2>&1 &\n".encode())
                         time.sleep(1.2)
