@@ -9,9 +9,31 @@ WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 LOGS_DIR="$WORKSPACE_ROOT/logs"
 
 # Paths to Kernel, Initrd, and Shared Model Weights
-KERNEL="${KERNEL:-$WORKSPACE_ROOT/capstone/rdma/bzImage}"
-INITRD="${INITRD:-$WORKSPACE_ROOT/capstone/initramfs.cpio.gz}"
-WEIGHTS_DIR="${WEIGHTS_DIR:-$WORKSPACE_ROOT/qwen_weights}"
+# Automatically checks both ~/capstone / ~/qwen_weights and repo paths
+if [[ -z "$KERNEL" ]]; then
+    if [[ -f "$HOME/capstone/rdma/bzImage" ]]; then
+        KERNEL="$HOME/capstone/rdma/bzImage"
+    else
+        KERNEL="$WORKSPACE_ROOT/capstone/rdma/bzImage"
+    fi
+fi
+
+if [[ -z "$INITRD" ]]; then
+    if [[ -f "$HOME/capstone/initramfs.cpio.gz" ]]; then
+        INITRD="$HOME/capstone/initramfs.cpio.gz"
+    else
+        INITRD="$WORKSPACE_ROOT/capstone/initramfs.cpio.gz"
+    fi
+fi
+
+if [[ -z "$WEIGHTS_DIR" ]]; then
+    if [[ -d "$HOME/qwen_weights" ]]; then
+        WEIGHTS_DIR="$HOME/qwen_weights"
+    else
+        WEIGHTS_DIR="$WORKSPACE_ROOT/qwen_weights"
+    fi
+fi
+
 
 BRIDGE="br0"
 BRIDGE_IP="192.168.100.1"
@@ -113,7 +135,7 @@ start_cluster() {
             -cpu host \
             -kernel "$KERNEL" \
             -initrd "$INITRD" \
-            -nographic \
+            -display none \
             -m "${ram_mb}M" \
             -smp "$cpus" \
             -append "console=ttyS0 root=/dev/ram0 rdinit=/init vm_id=${i} total_nodes=${num_nodes}" \
@@ -125,6 +147,7 @@ start_cluster() {
             -serial chardev:char0 \
             -pidfile "$pid_file" \
             -daemonize
+
 
         echo "[VM $i] Started (PID: $(cat "$pid_file" 2>/dev/null || echo 'Unknown'))"
     done
