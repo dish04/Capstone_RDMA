@@ -154,44 +154,83 @@ class TCPPipelineTransport:
 # Shared Memory / RDMA Pipeline Transport
 # ==============================================================================
 class RDMASharedMemTransport:
-    def __init__(self, rank, total_nodes, shm_path="/dev/shm/llm_buffer"):
+    """
+    Each rank owns one inbox: <shm_path>_in_<rank>. A rank only accepts messages
+    whose header sender field (index 6) is its predecessor in the ring.
+
+    Direct mode (default, single machine): the sender writes straight into the
+    successor's inbox, like a one-sided RDMA WRITE into a remote memory region.
+
+    Bridge mode (ranks on different machines): the sender writes into its own
+    outbox <shm_path>_out_<rank>, and the rdma_pipeline C bridge RDMA-writes it
+    into the successor's inbox, then clears the outbox flag.
+    """
+    def __init__(self, rank, total_nodes, shm_path="/dev/shm/llm_buffer", use_bridge=False):
         self.rank = rank
         self.total_nodes = total_nodes
         self.shm_path = shm_path
+        self.use_bridge = use_bridge
+        self.prev_rank = (rank - 1) % total_nodes
+        self.next_rank = (rank + 1) % total_nodes
         self.max_tensor_size = 4096 * HIDDEN_DIM * 4
         self.total_size = HEADER_SIZE + self.max_tensor_size
-        self.buffer = None
-        self.fd = None
+        self.inbox = None
+        self.outbox = None
+        self.fds = []
+
+    def _map(self, path):
+        fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o666)
+        os.ftruncate(fd, self.total_size)
+        self.fds.append(fd)
+        return mmap.mmap(fd, self.total_size)
+
+    def _clear_header(self, buf):
+        buf[:HEADER_SIZE] = b"\x00" * HEADER_SIZE
 
     def setup(self):
-        # Create or open shared memory
-        try:
-            self.fd = os.open(self.shm_path, os.O_CREAT | os.O_RDWR, 0o666)
-            os.ftruncate(self.fd, self.total_size)
-            self.buffer = mmap.mmap(self.fd, self.total_size)
-            print(f"[RDMA-SHM-Rank {self.rank}] Attached to shared memory {self.shm_path} ({self.total_size} bytes)")
-        except Exception as e:
-            print(f"[RDMA-SHM-Rank {self.rank}] Failed opening {self.shm_path}: {e}")
-            raise
+        inbox_path = f"{self.shm_path}_in_{self.rank}"
+        self.inbox = self._map(inbox_path)
+        self._clear_header(self.inbox)  # drop stale messages from an earlier run
+        if self.use_bridge:
+            self.outbox = self._map(f"{self.shm_path}_out_{self.rank}")
+            self._clear_header(self.outbox)
+        print(f"[RDMA-SHM-Rank {self.rank}] Inbox {inbox_path} | accepts from Rank {self.prev_rank} | "
+              f"sends to Rank {self.next_rank} ({'bridge' if self.use_bridge else 'direct'})")
 
-    def read_header(self):
-        return list(struct.unpack(STRUCT_FMT, self.buffer[:HEADER_SIZE]))
+    def send(self, header_list, tensor_bytes=b""):
+        if self.outbox is None:
+            if self.use_bridge:
+                raise RuntimeError("Outbox not mapped")
+            # Opened lazily so the successor has already created and cleared its inbox
+            self.outbox = self._map(f"{self.shm_path}_in_{self.next_rank}")
+        elif self.use_bridge:
+            # Wait for the bridge to finish pushing the previous message
+            while struct.unpack_from('i', self.outbox, 0)[0] != FLAG_IDLE:
+                time.sleep(0.0005)
+        # Payload first, header last, so the receiver never sees a flag before its data
+        self.outbox[HEADER_SIZE : HEADER_SIZE + len(tensor_bytes)] = tensor_bytes
+        self.outbox[:HEADER_SIZE] = struct.pack(STRUCT_FMT, *header_list)
 
-    def write_header(self, header_list):
-        self.buffer[:HEADER_SIZE] = struct.pack(STRUCT_FMT, *header_list)
-
-    def read_tensor_bytes(self, seq_len):
-        length = seq_len * HIDDEN_DIM * 4
-        return bytes(self.buffer[HEADER_SIZE : HEADER_SIZE + length])
-
-    def write_tensor_bytes(self, tensor_bytes):
-        self.buffer[HEADER_SIZE : HEADER_SIZE + len(tensor_bytes)] = tensor_bytes
+    def recv(self):
+        """Blocks until the predecessor's message arrives. Returns (header, tensor_bytes)."""
+        while True:
+            header = list(struct.unpack(STRUCT_FMT, self.inbox[:HEADER_SIZE]))
+            if header[0] != FLAG_IDLE and header[6] == self.prev_rank:
+                break
+            time.sleep(0.0005)
+        tensor_bytes = b""
+        if header[0] == FLAG_TENSOR_READY:
+            length = header[2] * HIDDEN_DIM * 4
+            tensor_bytes = bytes(self.inbox[HEADER_SIZE : HEADER_SIZE + length])
+        struct.pack_into('i', self.inbox, 0, FLAG_IDLE)
+        return header, tensor_bytes
 
     def close(self):
-        if self.buffer:
-            self.buffer.close()
-        if self.fd:
-            try: os.close(self.fd)
+        for buf in (self.inbox, self.outbox):
+            if buf:
+                buf.close()
+        for fd in self.fds:
+            try: os.close(fd)
             except: pass
 
 # ==============================================================================
@@ -308,7 +347,7 @@ def run_node(args):
         transport = TCPPipelineTransport(rank, total_nodes, node_ips, args.port_base)
         transport.setup()
     else:
-        transport = RDMASharedMemTransport(rank, total_nodes, args.shm_path)
+        transport = RDMASharedMemTransport(rank, total_nodes, args.shm_path, args.rdma_bridge)
         transport.setup()
 
     # Latency tracking records
@@ -356,9 +395,7 @@ def run_node(args):
                 if backend == 'tcp':
                     transport.send_tensor(header, tensor_bytes)
                 else:
-                    transport.write_tensor_bytes(tensor_bytes)
-                    header[0] = FLAG_TENSOR_READY
-                    transport.write_header(header)
+                    transport.send(header, tensor_bytes)
                 t_send_end = time.perf_counter_ns()
 
                 # --- 3. WAIT FOR TOKEN FROM LAST STAGE ---
@@ -367,14 +404,8 @@ def run_node(args):
                     ret_hdr = transport.recv_token()
                     pred_token = ret_hdr[3]
                 else:
-                    while True:
-                        hdr = transport.read_header()
-                        if hdr[0] == FLAG_TOKEN_READY or hdr[0] == 2:
-                            pred_token = hdr[3]
-                            hdr[0] = FLAG_IDLE
-                            transport.write_header(hdr)
-                            break
-                        time.sleep(0.0005)
+                    ret_hdr, _ = transport.recv()
+                    pred_token = ret_hdr[3]
                 t_wait_end = time.perf_counter_ns()
 
                 t_total = time.perf_counter_ns() - t_start
@@ -419,13 +450,7 @@ def run_node(args):
                 if backend == 'tcp':
                     header, tensor_bytes = transport.recv_tensor()
                 else:
-                    while True:
-                        header = transport.read_header()
-                        if header[0] == FLAG_TENSOR_READY or header[0] == 1:
-                            seq_len = header[2]
-                            tensor_bytes = transport.read_tensor_bytes(seq_len)
-                            break
-                        time.sleep(0.0005)
+                    header, tensor_bytes = transport.recv()
 
                 if header[0] == FLAG_TERMINATE:
                     print(f"[Rank {rank}] Received termination flag.")
@@ -453,8 +478,7 @@ def run_node(args):
                 if backend == 'tcp':
                     transport.send_tensor(out_header, out_bytes)
                 else:
-                    transport.write_tensor_bytes(out_bytes)
-                    transport.write_header(out_header)
+                    transport.send(out_header, out_bytes)
 
         # ==============================================================
         # FINAL STAGE (rank == total_nodes - 1, Head + Argmax)
@@ -465,13 +489,7 @@ def run_node(args):
                 if backend == 'tcp':
                     header, tensor_bytes = transport.recv_tensor()
                 else:
-                    while True:
-                        header = transport.read_header()
-                        if header[0] == FLAG_TENSOR_READY or header[0] == 1:
-                            seq_len = header[2]
-                            tensor_bytes = transport.read_tensor_bytes(seq_len)
-                            break
-                        time.sleep(0.0005)
+                    header, tensor_bytes = transport.recv()
 
                 if header[0] == FLAG_TERMINATE:
                     print(f"[Rank {rank}] Received termination flag.")
@@ -498,7 +516,7 @@ def run_node(args):
                 if backend == 'tcp':
                     transport.send_token(resp_header)
                 else:
-                    transport.write_header(resp_header)
+                    transport.send(resp_header)
 
     finally:
         transport.close()
@@ -602,7 +620,11 @@ def main():
                         help="Comma-separated list of IP addresses for Rank 0..N-1")
     parser.add_argument("--backend", choices=["tcp", "rdma"], default="tcp", help="Transport backend")
     parser.add_argument("--port-base", type=int, default=DEFAULT_PORT_BASE, help="Base TCP port for communication")
-    parser.add_argument("--shm-path", type=str, default="/dev/shm/llm_buffer", help="Shared memory file for RDMA")
+    parser.add_argument("--shm-path", type=str, default="/dev/shm/llm_buffer",
+                        help="Shared memory path prefix; rank r uses <prefix>_in_r (and <prefix>_out_r with --rdma-bridge)")
+    parser.add_argument("--rdma-bridge", action="store_true",
+                        help="Hand messages to the rdma_pipeline C bridge (ranks on different machines) "
+                             "instead of writing the next rank's inbox directly")
     parser.add_argument("--model-path", type=str, default=None, help="Path to HuggingFace model weights")
     parser.add_argument("--benchmark", action="store_true", help="Run synthetic tensor benchmark (no weights required)")
     parser.add_argument("--prompt", type=str, default="Explain how RDMA accelerates distributed AI inference in supercomputers.",
